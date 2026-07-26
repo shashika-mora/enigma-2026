@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-void: #0A0A0A;
+    --bg-charcoal: #1C1C1E;
+    --turing-amber: #D4A843;
+    --cipher-green: #39FF14;
+    --bombe-copper: #B87333;
+    --text-muted: #8E8E93;
+  }
+
+  body {
+    background-color: var(--bg-void);
+    color: #E5E5E7;
+    font-family: var(--font-inter), sans-serif;
+    overflow-x: hidden;
+    selection-background-color: var(--turing-amber);
+    selection-color: #000000;
+  }
+}
+
+/* Custom Typography Utility Classes */
+.font-serif-heading {
+  font-family: var(--font-playfair), serif;
+}
+
+.font-mono-code {
+  font-family: var(--font-jetbrains), monospace;
+}
+
+/* Theme Glow Effects */
+.glow-amber {
+  text-shadow: 0 0 12px rgba(212, 168, 67, 0.6), 0 0 24px rgba(212, 168, 67, 0.3);
+}
+
+.glow-amber-box {
+  box-shadow: 0 0 24px rgba(212, 168, 67, 0.3), inset 0 0 12px rgba(212, 168, 67, 0.15);
+}
+
+.glow-green {
+  text-shadow: 0 0 8px rgba(57, 255, 20, 0.7);
+}
+
+.glow-copper-border {
+  border-color: #B87333;
+  box-shadow: 0 0 20px rgba(184, 115, 51, 0.35);
+}
+
+/* Rounded Card Utilities for subtle, elegant corners */
+.rounded-card {
+  border-radius: 1.25rem; /* 20px rounded corners */
+}
+
+.rounded-container {
+  border-radius: 1.75rem; /* 28px rounded containers */
+}
+
+.rounded-input {
+  border-radius: 0.75rem; /* 12px rounded input controls */
+}
+
+/* Terminal Scanline Overlay */
+.scanline-overlay {
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.03),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.03)
+  );
+  background-size: 100% 3px, 6px 100%;
+  pointer-events: none;
+}
+
+/* Blinking Cursor Animation */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.animate-blink {
+  animation: blink 1s infinite;
+}
+
+/* Rotor Animation */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 40s linear infinite;
+}
