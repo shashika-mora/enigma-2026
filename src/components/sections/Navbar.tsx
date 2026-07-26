@@ -41,14 +41,9 @@ export const Navbar: React.FC = () => {
               className="object-contain"
             />
           </div>
-          <div className="flex flex-col">
-            <span className="font-serif-heading text-lg font-bold text-[#D4A843] tracking-widest group-hover:text-white transition-colors">
-              <TextScramble text="ENIGMA 2026" periodicInterval={6000} />
-            </span>
-            <span className="font-mono-code text-[10px] text-[#39FF14] tracking-tighter">
-              Bletchley Park Cipher Unit
-            </span>
-          </div>
+          <span className="font-serif-heading text-lg font-bold text-[#D4A843] tracking-widest group-hover:text-white transition-colors">
+            <TextScramble text="ENIGMA 2026" periodicInterval={6000} />
+          </span>
         </Link>
 
         {/* Desktop Navigation Links */}
