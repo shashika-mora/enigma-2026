@@ -2,12 +2,39 @@
 
 import React, { useEffect, useState } from "react";
 
+// Pre-compute static pin positions once so they are identical on every render
+// (avoids float-precision hydration mismatch between SSR and client).
+const ROTOR_A_PINS = Array.from({ length: 26 }).map((_, i) => {
+  const angle = (i * 360) / 26;
+  const rad = (angle * Math.PI) / 180;
+  const x1 = Number((250 + 160 * Math.cos(rad)).toFixed(4));
+  const y1 = Number((250 + 160 * Math.sin(rad)).toFixed(4));
+  const x2 = Number((250 + 200 * Math.cos(rad)).toFixed(4));
+  const y2 = Number((250 + 200 * Math.sin(rad)).toFixed(4));
+  return { x1, y1, x2, y2 };
+});
+
+const ROTOR_B_WIRES = Array.from({ length: 13 }).map((_, i) => {
+  const a1 = (i * 360) / 26;
+  const a2 = ((i + 7) * 360) / 26;
+  const r1 = (a1 * Math.PI) / 180;
+  const r2 = (a2 * Math.PI) / 180;
+  const x1 = Number((250 + 120 * Math.cos(r1)).toFixed(4));
+  const y1 = Number((250 + 120 * Math.sin(r1)).toFixed(4));
+  const x2 = Number((250 + 120 * Math.cos(r2)).toFixed(4));
+  const y2 = Number((250 + 120 * Math.sin(r2)).toFixed(4));
+  return { x1, y1, x2, y2 };
+});
+
 export const RotorBackground: React.FC = () => {
+  const [mounted, setMounted] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [mousePos, setMousePos] = useState({ x: -500, y: -500 });
   const [normMouse, setNormMouse] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
+    setMounted(true);
+
     const handleScroll = () => {
       setScrollY(window.scrollY);
     };
@@ -27,6 +54,9 @@ export const RotorBackground: React.FC = () => {
       window.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
+
+  // Don't render anything on server — avoids hydration float-precision mismatch
+  if (!mounted) return null;
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 select-none">
@@ -64,21 +94,13 @@ export const RotorBackground: React.FC = () => {
           <circle cx="250" cy="250" r="100" strokeDasharray="2 4" />
           <circle cx="250" cy="250" r="40" />
 
-          {/* Rotor Pins & Contacts */}
-          {Array.from({ length: 26 }).map((_, i) => {
-            const angle = (i * 360) / 26;
-            const rad = (angle * Math.PI) / 180;
-            const x1 = 250 + 160 * Math.cos(rad);
-            const y1 = 250 + 160 * Math.sin(rad);
-            const x2 = 250 + 200 * Math.cos(rad);
-            const y2 = 250 + 200 * Math.sin(rad);
-            return (
-              <g key={i}>
-                <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#D4A843" strokeWidth="1.5" />
-                <circle cx={x2} cy={y2} r="3" fill="#B87333" />
-              </g>
-            );
-          })}
+          {/* Rotor Pins & Contacts — pre-computed to fixed 4 decimals */}
+          {ROTOR_A_PINS.map((pin, i) => (
+            <g key={i}>
+              <line x1={pin.x1} y1={pin.y1} x2={pin.x2} y2={pin.y2} stroke="#D4A843" strokeWidth="1.5" />
+              <circle cx={pin.x2} cy={pin.y2} r="3" fill="#B87333" />
+            </g>
+          ))}
         </svg>
       </div>
 
@@ -95,26 +117,16 @@ export const RotorBackground: React.FC = () => {
           <circle cx="250" cy="250" r="120" strokeDasharray="10 10" />
           <circle cx="250" cy="250" r="60" />
 
-          {/* Internal Wiring Connections */}
-          {Array.from({ length: 13 }).map((_, i) => {
-            const a1 = (i * 360) / 26;
-            const a2 = ((i + 7) * 360) / 26;
-            const r1 = (a1 * Math.PI) / 180;
-            const r2 = (a2 * Math.PI) / 180;
-            const x1 = 250 + 120 * Math.cos(r1);
-            const y1 = 250 + 120 * Math.sin(r1);
-            const x2 = 250 + 120 * Math.cos(r2);
-            const y2 = 250 + 120 * Math.sin(r2);
-            return (
-              <path
-                key={i}
-                d={`M ${x1} ${y1} Q 250 250 ${x2} ${y2}`}
-                stroke="#D4A843"
-                strokeWidth="0.8"
-                opacity="0.6"
-              />
-            );
-          })}
+          {/* Internal Wiring Connections — pre-computed to fixed 4 decimals */}
+          {ROTOR_B_WIRES.map((wire, i) => (
+            <path
+              key={i}
+              d={`M ${wire.x1} ${wire.y1} Q 250 250 ${wire.x2} ${wire.y2}`}
+              stroke="#D4A843"
+              strokeWidth="0.8"
+              opacity="0.6"
+            />
+          ))}
         </svg>
       </div>
 

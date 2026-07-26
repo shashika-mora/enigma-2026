@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface Particle {
   x: number;
@@ -13,16 +13,24 @@ interface Particle {
 }
 
 const CIPHER_SNIPPETS = [
-  "XKQZM", "RPTLW", "BNGHS", "0101", "1010", "σ∈Sₙ", "|Sₙ|=n!", 
+  "XKQZM", "RPTLW", "BNGHS", "0101", "1010", "σ∈Sₙ", "|Sₙ|=n!",
   "BOMBE", "TURING", "CIPHER", "E(x)", "MOD26", "λ(x)", "0110",
-  "P=NP?", "DET(A)", "φ(n)", "HEX", "ENIGMA", "1940"
+  "P=NP?", "DET(A)", "φ(n)", "HEX", "ENIGMA", "1940",
+  "10110", "01001", "XOR", "AES", "RSA", "∑∞", "∇²ψ", "Δx",
 ];
 
 export const CipherParticles: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const mouseRef = useRef({ x: -1000, y: -1000 });
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -45,37 +53,39 @@ export const CipherParticles: React.FC = () => {
     window.addEventListener("resize", handleResize);
     window.addEventListener("mousemove", handleMouseMove);
 
-    // Initialize 65 floating & falling cipher text particles
-    const particles: Particle[] = Array.from({ length: 65 }).map(() => ({
+    // Initialize 80 floating & falling cipher text particles
+    const particles: Particle[] = Array.from({ length: 80 }).map(() => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      speed: 0.5 + Math.random() * 1.5,
+      speed: 0.4 + Math.random() * 1.6,
       text: CIPHER_SNIPPETS[Math.floor(Math.random() * CIPHER_SNIPPETS.length)],
-      size: 10 + Math.floor(Math.random() * 6),
-      opacity: 0.15 + Math.random() * 0.4,
+      size: 10 + Math.floor(Math.random() * 7),
+      opacity: 0.12 + Math.random() * 0.35,
       color: Math.random() > 0.4 ? "#39FF14" : "#D4A843",
     }));
 
     const render = () => {
-      ctx.clearRect(0, 0, width, height);
+      // Fade trail — dark semi-transparent fill instead of clearRect gives matrix rain feel
+      ctx.fillStyle = "rgba(10, 10, 10, 0.18)";
+      ctx.fillRect(0, 0, width, height);
 
-      // Render Mouse Tracking Light Aura on Canvas
+      // Mouse Tracking Light Aura on Canvas
       const mx = mouseRef.current.x;
       const my = mouseRef.current.y;
       if (mx > 0 && my > 0) {
-        const gradient = ctx.createRadialGradient(mx, my, 0, mx, my, 280);
-        gradient.addColorStop(0, "rgba(212, 168, 67, 0.25)");
-        gradient.addColorStop(0.5, "rgba(57, 255, 20, 0.08)");
+        const gradient = ctx.createRadialGradient(mx, my, 0, mx, my, 320);
+        gradient.addColorStop(0, "rgba(212, 168, 67, 0.22)");
+        gradient.addColorStop(0.45, "rgba(57, 255, 20, 0.07)");
         gradient.addColorStop(1, "rgba(10, 10, 10, 0)");
         ctx.fillStyle = gradient;
         ctx.beginPath();
-        ctx.arc(mx, my, 280, 0, Math.PI * 2);
+        ctx.arc(mx, my, 320, 0, Math.PI * 2);
         ctx.fill();
       }
 
       // Render Floating & Falling Cipher Rain Particles
       particles.forEach((p) => {
-        // Move downwards
+        // Move downwards (matrix rain)
         p.y += p.speed;
         if (p.y > height + 20) {
           p.y = -20;
@@ -89,16 +99,25 @@ export const CipherParticles: React.FC = () => {
         const dist = Math.sqrt(dx * dx + dy * dy);
         let offsetX = 0;
         let offsetY = 0;
-        if (dist < 180) {
+        if (dist < 180 && dist > 0) {
           const force = (180 - dist) / 180;
-          offsetX = (dx / dist) * force * 25;
-          offsetY = (dy / dist) * force * 25;
+          offsetX = (dx / dist) * force * 28;
+          offsetY = (dy / dist) * force * 28;
         }
 
-        ctx.font = `${p.size}px "JetBrains Mono", monospace`;
+        ctx.save();
+        ctx.font = `${p.size}px "JetBrains Mono", "Courier New", monospace`;
+        ctx.globalAlpha = dist < 200 ? Math.min(p.opacity + 0.4, 0.9) : p.opacity;
         ctx.fillStyle = p.color;
-        ctx.globalAlpha = dist < 200 ? Math.min(p.opacity + 0.3, 0.85) : p.opacity;
+        // Add glow effect for particles near the cursor
+        if (dist < 200) {
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = p.color;
+        } else {
+          ctx.shadowBlur = 0;
+        }
         ctx.fillText(p.text, p.x + offsetX, p.y + offsetY);
+        ctx.restore();
       });
 
       animationFrameId = requestAnimationFrame(render);
@@ -111,12 +130,16 @@ export const CipherParticles: React.FC = () => {
       window.removeEventListener("mousemove", handleMouseMove);
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [mounted]);
+
+  // Don't render canvas on server — avoids hydration mismatch
+  if (!mounted) return null;
 
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0 opacity-80"
+      className="fixed inset-0 pointer-events-none z-0"
+      style={{ opacity: 0.85 }}
     />
   );
 };
