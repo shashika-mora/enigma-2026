@@ -145,7 +145,7 @@ export const RegistrationSection: React.FC = () => {
       {/* Terminal Container */}
       <div className="bg-[#0A0A0A] border-2 border-[#39FF14]/60 p-5 sm:p-10 rounded-2xl sm:rounded-3xl relative shadow-[0_0_30px_rgba(57,255,20,0.15)] scanline-overlay overflow-hidden">
         {/* Terminal Header Bar */}
-        <div className="flex flex-wrap items-center justify-between border-b border-[#39FF14]/40 pb-4 mb-6 sm:mb-8 font-mono-code text-xs gap-2">
+        <div className="relative z-10 flex flex-wrap items-center justify-between border-b border-[#39FF14]/40 pb-4 mb-6 sm:mb-8 font-mono-code text-xs gap-2">
           <div className="flex items-center gap-2 text-[#39FF14]">
             <Terminal size={18} />
             <span className="font-bold text-xs sm:text-base tracking-tight">
@@ -160,7 +160,7 @@ export const RegistrationSection: React.FC = () => {
 
         {status === "granted" ? (
           /* Enigma Lamp ACCESS GRANTED Animation State */
-          <div className="py-12 sm:py-16 text-center space-y-6 font-mono-code">
+          <div className="relative z-10 py-12 sm:py-16 text-center space-y-6 font-mono-code">
             <div className="inline-flex p-6 rounded-full bg-[#D4A843]/10 border-2 border-[#D4A843] glow-amber-box">
               <ShieldCheck size={56} className="text-[#D4A843]" />
             </div>
@@ -193,7 +193,7 @@ export const RegistrationSection: React.FC = () => {
           </div>
         ) : (
           /* Terminal Command-Line Registration Form */
-          <form onSubmit={handleSubmit} className="space-y-6 font-mono-code text-xs">
+          <form onSubmit={handleSubmit} className="relative z-10 space-y-6 font-mono-code text-xs">
             {status === "error" && (
               <div className="p-3 bg-red-950/60 border border-red-500 rounded-xl text-red-400 flex items-center gap-2">
                 <AlertCircle size={16} />
