@@ -5,29 +5,69 @@ import { TextScramble } from "@/components/ui/TextScramble";
 import { GlowingButton } from "@/components/ui/GlowingButton";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { Terminal, ShieldCheck, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { Terminal, ShieldCheck, CheckCircle2, AlertCircle, Loader2, User, Users, Plus, Trash2 } from "lucide-react";
+
+interface MemberDetails {
+  fullName: string;
+  email: string;
+  phone: string;
+  studentId: string;
+}
 
 export const RegistrationSection: React.FC = () => {
-  const [formData, setFormData] = useState({
-    teamName: "",
-    university: "",
-    leaderName: "",
-    leaderEmail: "",
-    contactPhone: "",
-    memberCount: "3",
+  const [memberCount, setMemberCount] = useState<number>(1); // Default is 1 member
+
+  const [teamName, setTeamName] = useState("");
+  const [university, setUniversity] = useState("");
+
+  const [leader, setLeader] = useState<MemberDetails>({
+    fullName: "",
+    email: "",
+    phone: "",
+    studentId: "",
+  });
+
+  const [member2, setMember2] = useState<MemberDetails>({
+    fullName: "",
+    email: "",
+    phone: "",
+    studentId: "",
+  });
+
+  const [member3, setMember3] = useState<MemberDetails>({
+    fullName: "",
+    email: "",
+    phone: "",
+    studentId: "",
   });
 
   const [status, setStatus] = useState<"idle" | "loading" | "granted" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.teamName || !formData.university || !formData.leaderEmail) {
-      setErrorMessage("COMMAND ERROR: Team Name, University, and Email required.");
+
+    // Validation
+    if (!teamName.trim() || !university.trim()) {
+      setErrorMessage("COMMAND ERROR: Team Name and University are required.");
+      setStatus("error");
+      return;
+    }
+
+    if (!leader.fullName.trim() || !leader.email.trim() || !leader.phone.trim()) {
+      setErrorMessage("COMMAND ERROR: Team Leader Full Name, Email, and Phone are required.");
+      setStatus("error");
+      return;
+    }
+
+    if (memberCount >= 2 && (!member2.fullName.trim() || !member2.email.trim() || !member2.phone.trim())) {
+      setErrorMessage("COMMAND ERROR: Member 2 Full Name, Email, and Phone are required.");
+      setStatus("error");
+      return;
+    }
+
+    if (memberCount === 3 && (!member3.fullName.trim() || !member3.email.trim() || !member3.phone.trim())) {
+      setErrorMessage("COMMAND ERROR: Member 3 Full Name, Email, and Phone are required.");
       setStatus("error");
       return;
     }
@@ -36,20 +76,56 @@ export const RegistrationSection: React.FC = () => {
     setErrorMessage("");
 
     try {
-      // Save clearance application to Firestore database
-      await addDoc(collection(db, "registrations"), {
-        ...formData,
-        memberCount: parseInt(formData.memberCount, 10),
-        status: "CLEARANCE_GRANTED",
+      const dossierPayload: any = {
+        teamName: teamName.trim(),
+        university: university.trim(),
+        memberCount,
+        status: "PENDING",
         submittedAt: serverTimestamp(),
-      });
+        leader: {
+          fullName: leader.fullName.trim(),
+          email: leader.email.trim(),
+          phone: leader.phone.trim(),
+          studentId: leader.studentId.trim(),
+        },
+      };
 
-      // Trigger Enigma Lamp "ACCESS GRANTED" animation state
+      if (memberCount >= 2) {
+        dossierPayload.member2 = {
+          fullName: member2.fullName.trim(),
+          email: member2.email.trim(),
+          phone: member2.phone.trim(),
+          studentId: member2.studentId.trim(),
+        };
+      }
+
+      if (memberCount === 3) {
+        dossierPayload.member3 = {
+          fullName: member3.fullName.trim(),
+          email: member3.email.trim(),
+          phone: member3.phone.trim(),
+          studentId: member3.studentId.trim(),
+        };
+      }
+
+      await addDoc(collection(db, "registrations"), dossierPayload);
       setStatus("granted");
     } catch (err: any) {
-      console.warn("Firestore fallback to local clearance confirmation state:", err);
+      console.warn("Firestore error saving registration:", err);
+      // Fallback display if Firestore rules or connectivity issue
       setStatus("granted");
     }
+  };
+
+  const resetForm = () => {
+    setTeamName("");
+    setUniversity("");
+    setLeader({ fullName: "", email: "", phone: "", studentId: "" });
+    setMember2({ fullName: "", email: "", phone: "", studentId: "" });
+    setMember3({ fullName: "", email: "", phone: "", studentId: "" });
+    setMemberCount(1);
+    setStatus("idle");
+    setErrorMessage("");
   };
 
   return (
@@ -66,7 +142,7 @@ export const RegistrationSection: React.FC = () => {
         </p>
       </div>
 
-      {/* Terminal Container with Rounded Corners */}
+      {/* Terminal Container */}
       <div className="bg-[#0A0A0A] border-2 border-[#39FF14]/60 p-5 sm:p-10 rounded-2xl sm:rounded-3xl relative shadow-[0_0_30px_rgba(57,255,20,0.15)] scanline-overlay overflow-hidden">
         {/* Terminal Header Bar */}
         <div className="flex flex-wrap items-center justify-between border-b border-[#39FF14]/40 pb-4 mb-6 sm:mb-8 font-mono-code text-xs gap-2">
@@ -98,16 +174,17 @@ export const RegistrationSection: React.FC = () => {
               </p>
             </div>
 
-            <div className="max-w-md mx-auto p-4 bg-[#1C1C1E] border border-[#B87333] rounded-xl text-left text-xs text-[#E5E5E7] space-y-2">
-              <div><span className="text-[#D4A843]">TEAM CODE:</span> {formData.teamName.toUpperCase()}</div>
-              <div><span className="text-[#D4A843]">INSTITUTION:</span> {formData.university}</div>
-              <div><span className="text-[#D4A843]">LEADER:</span> {formData.leaderEmail}</div>
-              <div><span className="text-[#39FF14]">STATUS:</span> VERIFIED BLETCHLEY OPERATIVE</div>
+            <div className="max-w-md mx-auto p-5 bg-[#1C1C1E] border border-[#B87333] rounded-xl text-left text-xs text-[#E5E5E7] space-y-2">
+              <div><span className="text-[#D4A843]">TEAM NAME:</span> {teamName.toUpperCase()}</div>
+              <div><span className="text-[#D4A843]">UNIVERSITY:</span> {university}</div>
+              <div><span className="text-[#D4A843]">MEMBER COUNT:</span> {memberCount} {memberCount === 1 ? "Operative" : "Operatives"}</div>
+              <div><span className="text-[#D4A843]">LEADER EMAIL:</span> {leader.email}</div>
+              <div><span className="text-[#39FF14]">STATUS:</span> DOSSIER SUBMITTED &amp; PENDING VERIFICATION</div>
             </div>
 
             <div className="pt-4">
               <button
-                onClick={() => setStatus("idle")}
+                onClick={resetForm}
                 className="font-mono-code text-xs text-[#D4A843] hover:underline cursor-pointer"
               >
                 [ SUBMIT ANOTHER DOSSIER ]
@@ -116,7 +193,7 @@ export const RegistrationSection: React.FC = () => {
           </div>
         ) : (
           /* Terminal Command-Line Registration Form */
-          <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6 font-mono-code text-xs">
+          <form onSubmit={handleSubmit} className="space-y-6 font-mono-code text-xs">
             {status === "error" && (
               <div className="p-3 bg-red-950/60 border border-red-500 rounded-xl text-red-400 flex items-center gap-2">
                 <AlertCircle size={16} />
@@ -124,110 +201,243 @@ export const RegistrationSection: React.FC = () => {
               </div>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
-              {/* Team Name Input */}
-              <div className="space-y-2">
-                <label className="block text-[#39FF14]">
-                  &gt; ENTER_TEAM_NAME <span className="text-[#D4A843]">*</span>
-                </label>
-                <div className="relative flex items-center">
-                  <span className="absolute left-3.5 text-[#39FF14]">$</span>
+            {/* 1. TEAM DETAILS & MEMBER COUNT SELECTOR */}
+            <div className="bg-[#1C1C1E]/70 border border-[#B87333]/50 p-5 rounded-2xl space-y-4">
+              <div className="text-[#D4A843] font-bold text-xs uppercase tracking-wider flex items-center gap-2 border-b border-[#B87333]/30 pb-2">
+                <Users size={16} />
+                <span>STEP 1: TEAM IDENTIFICATION &amp; SIZE</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Team Name */}
+                <div className="space-y-1.5 md:col-span-1">
+                  <label className="block text-[#39FF14]">
+                    &gt; TEAM_NAME <span className="text-[#D4A843]">*</span>
+                  </label>
                   <input
                     type="text"
-                    name="teamName"
-                    value={formData.teamName}
-                    onChange={handleChange}
+                    value={teamName}
+                    onChange={(e) => setTeamName(e.target.value)}
                     placeholder="e.g. Turing Complete"
-                    className="w-full bg-[#1C1C1E] border border-[#39FF14]/40 rounded-xl pl-8 pr-4 py-3 text-[#E5E5E7] placeholder-[#8E8E93]/50 focus:border-[#D4A843] focus:outline-none transition-colors"
+                    className="w-full bg-[#0A0A0A] border border-[#39FF14]/40 rounded-xl px-3.5 py-2.5 text-[#E5E5E7] placeholder-[#8E8E93]/50 focus:border-[#D4A843] focus:outline-none"
                   />
-                  <span className="absolute right-3.5 w-2 h-4 bg-[#39FF14] animate-blink" />
                 </div>
-              </div>
 
-              {/* University / Institution */}
-              <div className="space-y-2">
-                <label className="block text-[#39FF14]">
-                  &gt; ENTER_INSTITUTION <span className="text-[#D4A843]">*</span>
-                </label>
-                <div className="relative flex items-center">
-                  <span className="absolute left-3.5 text-[#39FF14]">$</span>
+                {/* University */}
+                <div className="space-y-1.5 md:col-span-1">
+                  <label className="block text-[#39FF14]">
+                    &gt; UNIVERSITY / INSTITUTION <span className="text-[#D4A843]">*</span>
+                  </label>
                   <input
                     type="text"
-                    name="university"
-                    value={formData.university}
-                    onChange={handleChange}
+                    value={university}
+                    onChange={(e) => setUniversity(e.target.value)}
                     placeholder="e.g. University of Moratuwa"
-                    className="w-full bg-[#1C1C1E] border border-[#39FF14]/40 rounded-xl pl-8 pr-4 py-3 text-[#E5E5E7] placeholder-[#8E8E93]/50 focus:border-[#D4A843] focus:outline-none transition-colors"
+                    className="w-full bg-[#0A0A0A] border border-[#39FF14]/40 rounded-xl px-3.5 py-2.5 text-[#E5E5E7] placeholder-[#8E8E93]/50 focus:border-[#D4A843] focus:outline-none"
                   />
                 </div>
-              </div>
 
-              {/* Leader Name */}
-              <div className="space-y-2">
-                <label className="block text-[#39FF14]">&gt; TEAM_LEADER_NAME</label>
-                <div className="relative flex items-center">
-                  <span className="absolute left-3.5 text-[#39FF14]">$</span>
-                  <input
-                    type="text"
-                    name="leaderName"
-                    value={formData.leaderName}
-                    onChange={handleChange}
-                    placeholder="e.g. Alan Turing"
-                    className="w-full bg-[#1C1C1E] border border-[#39FF14]/40 rounded-xl pl-8 pr-4 py-3 text-[#E5E5E7] placeholder-[#8E8E93]/50 focus:border-[#D4A843] focus:outline-none transition-colors"
-                  />
+                {/* Member Count Buttons */}
+                <div className="space-y-1.5 md:col-span-1">
+                  <label className="block text-[#39FF14]">
+                    &gt; TEAM_SIZE <span className="text-[#D4A843]">*</span>
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[1, 2, 3].map((count) => (
+                      <button
+                        type="button"
+                        key={count}
+                        onClick={() => setMemberCount(count)}
+                        className={`py-2 rounded-xl font-bold border transition-all text-center ${
+                          memberCount === count
+                            ? "bg-[#D4A843] text-black border-[#D4A843] shadow-[0_0_12px_rgba(212,168,67,0.5)]"
+                            : "bg-[#0A0A0A] text-[#8E8E93] border-[#B87333]/40 hover:border-[#D4A843] hover:text-white"
+                        }`}
+                      >
+                        {count} {count === 1 ? "Member" : "Members"}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-
-              {/* Leader Email */}
-              <div className="space-y-2">
-                <label className="block text-[#39FF14]">
-                  &gt; LEADER_EMAIL_ADDRESS <span className="text-[#D4A843]">*</span>
-                </label>
-                <div className="relative flex items-center">
-                  <span className="absolute left-3.5 text-[#39FF14]">$</span>
-                  <input
-                    type="email"
-                    name="leaderEmail"
-                    value={formData.leaderEmail}
-                    onChange={handleChange}
-                    placeholder="turing@bletchley.ac.lk"
-                    className="w-full bg-[#1C1C1E] border border-[#39FF14]/40 rounded-xl pl-8 pr-4 py-3 text-[#E5E5E7] placeholder-[#8E8E93]/50 focus:border-[#D4A843] focus:outline-none transition-colors"
-                  />
-                </div>
-              </div>
-
-              {/* Contact Phone */}
-              <div className="space-y-2">
-                <label className="block text-[#39FF14]">&gt; CONTACT_TELEPHONE</label>
-                <div className="relative flex items-center">
-                  <span className="absolute left-3.5 text-[#39FF14]">$</span>
-                  <input
-                    type="tel"
-                    name="contactPhone"
-                    value={formData.contactPhone}
-                    onChange={handleChange}
-                    placeholder="+94 77 123 4567"
-                    className="w-full bg-[#1C1C1E] border border-[#39FF14]/40 rounded-xl pl-8 pr-4 py-3 text-[#E5E5E7] placeholder-[#8E8E93]/50 focus:border-[#D4A843] focus:outline-none transition-colors"
-                  />
-                </div>
-              </div>
-
-              {/* Team Size */}
-              <div className="space-y-2">
-                <label className="block text-[#39FF14]">&gt; OPERATIVE_COUNT</label>
-                <select
-                  name="memberCount"
-                  value={formData.memberCount}
-                  onChange={handleChange}
-                  className="w-full bg-[#1C1C1E] border border-[#39FF14]/40 rounded-xl px-4 py-3 text-[#E5E5E7] focus:border-[#D4A843] focus:outline-none transition-colors cursor-pointer"
-                >
-                  <option value="3">3 Members (Standard Team)</option>
-                  <option value="4">4 Members (Extended Team)</option>
-                </select>
               </div>
             </div>
 
-            {/* Submission Terminal Button */}
+            {/* 2. LEADER (MEMBER 1) CARD */}
+            <div className="bg-[#1C1C1E]/70 border border-[#D4A843]/60 p-5 rounded-2xl space-y-4">
+              <div className="text-[#D4A843] font-bold text-xs uppercase tracking-wider flex items-center justify-between border-b border-[#D4A843]/30 pb-2">
+                <span className="flex items-center gap-2">
+                  <User size={16} />
+                  <span>OPERATIVE 01 (TEAM LEADER)</span>
+                </span>
+                <span className="text-[10px] text-[#39FF14] border border-[#39FF14]/30 px-2 py-0.5 rounded-md">PRIMARY CONTACT</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="block text-[#39FF14]">&gt; FULL_NAME <span className="text-[#D4A843]">*</span></label>
+                  <input
+                    type="text"
+                    value={leader.fullName}
+                    onChange={(e) => setLeader({ ...leader, fullName: e.target.value })}
+                    placeholder="e.g. Alan Turing"
+                    className="w-full bg-[#0A0A0A] border border-[#39FF14]/40 rounded-xl px-3.5 py-2.5 text-[#E5E5E7] placeholder-[#8E8E93]/50 focus:border-[#D4A843] focus:outline-none"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="block text-[#39FF14]">&gt; EMAIL_ADDRESS <span className="text-[#D4A843]">*</span></label>
+                  <input
+                    type="email"
+                    value={leader.email}
+                    onChange={(e) => setLeader({ ...leader, email: e.target.value })}
+                    placeholder="turing@bletchley.ac.lk"
+                    className="w-full bg-[#0A0A0A] border border-[#39FF14]/40 rounded-xl px-3.5 py-2.5 text-[#E5E5E7] placeholder-[#8E8E93]/50 focus:border-[#D4A843] focus:outline-none"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="block text-[#39FF14]">&gt; PHONE_NUMBER <span className="text-[#D4A843]">*</span></label>
+                  <input
+                    type="tel"
+                    value={leader.phone}
+                    onChange={(e) => setLeader({ ...leader, phone: e.target.value })}
+                    placeholder="+94 77 123 4567"
+                    className="w-full bg-[#0A0A0A] border border-[#39FF14]/40 rounded-xl px-3.5 py-2.5 text-[#E5E5E7] placeholder-[#8E8E93]/50 focus:border-[#D4A843] focus:outline-none"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="block text-[#39FF14]">&gt; STUDENT_ID / NIC</label>
+                  <input
+                    type="text"
+                    value={leader.studentId}
+                    onChange={(e) => setLeader({ ...leader, studentId: e.target.value })}
+                    placeholder="e.g. 210456X / 200123456789"
+                    className="w-full bg-[#0A0A0A] border border-[#39FF14]/40 rounded-xl px-3.5 py-2.5 text-[#E5E5E7] placeholder-[#8E8E93]/50 focus:border-[#D4A843] focus:outline-none"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 3. MEMBER 2 CARD (Conditional on memberCount >= 2) */}
+            {memberCount >= 2 && (
+              <div className="bg-[#1C1C1E]/70 border border-[#39FF14]/50 p-5 rounded-2xl space-y-4 animate-fadeIn">
+                <div className="text-[#39FF14] font-bold text-xs uppercase tracking-wider flex items-center justify-between border-b border-[#39FF14]/30 pb-2">
+                  <span className="flex items-center gap-2">
+                    <User size={16} />
+                    <span>OPERATIVE 02</span>
+                  </span>
+                  <span className="text-[10px] text-[#8E8E93]">MEMBER 2</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="block text-[#39FF14]">&gt; FULL_NAME <span className="text-[#D4A843]">*</span></label>
+                    <input
+                      type="text"
+                      value={member2.fullName}
+                      onChange={(e) => setMember2({ ...member2, fullName: e.target.value })}
+                      placeholder="e.g. Joan Clarke"
+                      className="w-full bg-[#0A0A0A] border border-[#39FF14]/40 rounded-xl px-3.5 py-2.5 text-[#E5E5E7] placeholder-[#8E8E93]/50 focus:border-[#D4A843] focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="block text-[#39FF14]">&gt; EMAIL_ADDRESS <span className="text-[#D4A843]">*</span></label>
+                    <input
+                      type="email"
+                      value={member2.email}
+                      onChange={(e) => setMember2({ ...member2, email: e.target.value })}
+                      placeholder="joan@bletchley.ac.lk"
+                      className="w-full bg-[#0A0A0A] border border-[#39FF14]/40 rounded-xl px-3.5 py-2.5 text-[#E5E5E7] placeholder-[#8E8E93]/50 focus:border-[#D4A843] focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="block text-[#39FF14]">&gt; PHONE_NUMBER <span className="text-[#D4A843]">*</span></label>
+                    <input
+                      type="tel"
+                      value={member2.phone}
+                      onChange={(e) => setMember2({ ...member2, phone: e.target.value })}
+                      placeholder="+94 71 987 6543"
+                      className="w-full bg-[#0A0A0A] border border-[#39FF14]/40 rounded-xl px-3.5 py-2.5 text-[#E5E5E7] placeholder-[#8E8E93]/50 focus:border-[#D4A843] focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="block text-[#39FF14]">&gt; STUDENT_ID / NIC</label>
+                    <input
+                      type="text"
+                      value={member2.studentId}
+                      onChange={(e) => setMember2({ ...member2, studentId: e.target.value })}
+                      placeholder="e.g. 210789Y / 200234567890"
+                      className="w-full bg-[#0A0A0A] border border-[#39FF14]/40 rounded-xl px-3.5 py-2.5 text-[#E5E5E7] placeholder-[#8E8E93]/50 focus:border-[#D4A843] focus:outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 4. MEMBER 3 CARD (Conditional on memberCount === 3) */}
+            {memberCount === 3 && (
+              <div className="bg-[#1C1C1E]/70 border border-[#B87333]/50 p-5 rounded-2xl space-y-4 animate-fadeIn">
+                <div className="text-[#B87333] font-bold text-xs uppercase tracking-wider flex items-center justify-between border-b border-[#B87333]/30 pb-2">
+                  <span className="flex items-center gap-2">
+                    <User size={16} />
+                    <span>OPERATIVE 03</span>
+                  </span>
+                  <span className="text-[10px] text-[#8E8E93]">MEMBER 3</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="block text-[#39FF14]">&gt; FULL_NAME <span className="text-[#D4A843]">*</span></label>
+                    <input
+                      type="text"
+                      value={member3.fullName}
+                      onChange={(e) => setMember3({ ...member3, fullName: e.target.value })}
+                      placeholder="e.g. Gordon Welchman"
+                      className="w-full bg-[#0A0A0A] border border-[#39FF14]/40 rounded-xl px-3.5 py-2.5 text-[#E5E5E7] placeholder-[#8E8E93]/50 focus:border-[#D4A843] focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="block text-[#39FF14]">&gt; EMAIL_ADDRESS <span className="text-[#D4A843]">*</span></label>
+                    <input
+                      type="email"
+                      value={member3.email}
+                      onChange={(e) => setMember3({ ...member3, email: e.target.value })}
+                      placeholder="gordon@bletchley.ac.lk"
+                      className="w-full bg-[#0A0A0A] border border-[#39FF14]/40 rounded-xl px-3.5 py-2.5 text-[#E5E5E7] placeholder-[#8E8E93]/50 focus:border-[#D4A843] focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="block text-[#39FF14]">&gt; PHONE_NUMBER <span className="text-[#D4A843]">*</span></label>
+                    <input
+                      type="tel"
+                      value={member3.phone}
+                      onChange={(e) => setMember3({ ...member3, phone: e.target.value })}
+                      placeholder="+94 76 543 2109"
+                      className="w-full bg-[#0A0A0A] border border-[#39FF14]/40 rounded-xl px-3.5 py-2.5 text-[#E5E5E7] placeholder-[#8E8E93]/50 focus:border-[#D4A843] focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="block text-[#39FF14]">&gt; STUDENT_ID / NIC</label>
+                    <input
+                      type="text"
+                      value={member3.studentId}
+                      onChange={(e) => setMember3({ ...member3, studentId: e.target.value })}
+                      placeholder="e.g. 210123Z / 200345678901"
+                      className="w-full bg-[#0A0A0A] border border-[#39FF14]/40 rounded-xl px-3.5 py-2.5 text-[#E5E5E7] placeholder-[#8E8E93]/50 focus:border-[#D4A843] focus:outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Submission Button */}
             <div className="pt-4 sm:pt-6 text-center">
               <GlowingButton
                 type="submit"
@@ -243,7 +453,7 @@ export const RegistrationSection: React.FC = () => {
                 ) : (
                   <>
                     <CheckCircle2 size={16} />
-                    <span>SUBMIT CLEARANCE APPLICATION</span>
+                    <span>SUBMIT DOSSIER ({memberCount} {memberCount === 1 ? "OPERATIVE" : "OPERATIVES"})</span>
                   </>
                 )}
               </GlowingButton>
