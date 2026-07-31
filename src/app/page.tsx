@@ -4,6 +4,7 @@ import { AboutSection } from "@/components/sections/AboutSection";
 import { RoundsSection } from "@/components/sections/RoundsSection";
 import { TimelineSection } from "@/components/sections/TimelineSection";
 import { RegistrationSection } from "@/components/sections/RegistrationSection";
+import { RulesSection } from "@/components/sections/RulesSection";
 import { GallerySection } from "@/components/sections/GallerySection";
 import { PartnersSection } from "@/components/sections/PartnersSection";
 import { ContactSection } from "@/components/sections/ContactSection";
@@ -16,6 +17,7 @@ export default function Home() {
       <HeroSection />
       <AboutSection />
       <RoundsSection />
+      <RulesSection />
       <TimelineSection />
       <RegistrationSection />
       <GallerySection />
