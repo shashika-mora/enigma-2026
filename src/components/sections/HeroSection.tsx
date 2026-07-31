@@ -72,15 +72,7 @@ export const HeroSection: React.FC = () => {
             >
               <TextScramble text="ENIGMA 2026" autostart={true} periodicInterval={5000} />
             </h1>
-            <p
-              className="font-mono-code text-sm sm:text-lg tracking-widest uppercase"
-              style={{
-                color: "#39FF14",
-                textShadow: "0 0 14px rgba(57,255,20,0.7), 0 0 4px rgba(0,0,0,0.8)"
-              }}
-            >
-              [ <TextScramble text="XKQZM RPTLW BNGHS" scrambleSpeed={30} periodicInterval={4000} /> ]
-            </p>
+
           </div>
         </div>
 
@@ -95,9 +87,9 @@ export const HeroSection: React.FC = () => {
         {/* Key Information Badges */}
         <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 font-mono-code text-[11px] sm:text-xs">
           {[
-            { dot: "#39FF14", label: "THEME: ALAN TURING CRYPTANALYSIS" },
+            { dot: "#D4A843", label: "THEME: ALAN TURING CRYPTANALYSIS" },
             { dot: "#D4A843", label: "FORMAT: 3 STAGES" },
-            { dot: "#B87333", label: "TARGET: UNDERGRADUATE CRYPTOGRAPHERS" },
+            { dot: "#D4A843", label: "TARGET: UNDERGRADUATE" },
           ].map(({ dot, label }) => (
             <div
               key={label}
