@@ -78,8 +78,8 @@ export const TextScramble: React.FC<TextScrambleProps> = ({
       onMouseEnter={() => {
         if (hoverToScramble) triggerScramble();
       }}
-      className={`cursor-pointer inline-block transition-colors duration-200 ${
-        isScrambling ? "text-[#39FF14] glow-green font-mono-code" : ""
+      className={`cursor-pointer inline-block whitespace-nowrap transition-colors duration-200 ${
+        isScrambling ? "text-[#39FF14] glow-green font-code-raw" : ""
       } ${className}`}
     >
       {displayText}

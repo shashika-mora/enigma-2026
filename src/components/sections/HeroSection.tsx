@@ -62,9 +62,9 @@ export const HeroSection: React.FC = () => {
           {/* Blurred dark backdrop card */}
           <div className="absolute inset-x-0 -inset-y-4 sm:-inset-y-6 bg-black/50 backdrop-blur-sm rounded-2xl border border-white/5 -z-10" />
 
-          <div className="space-y-3 py-2">
+          <div className="space-y-3 py-2 overflow-hidden">
             <h1
-              className="font-serif-heading text-5xl sm:text-7xl lg:text-9xl font-bold tracking-tight uppercase"
+              className="font-serif-heading text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold tracking-tight uppercase whitespace-nowrap"
               style={{
                 color: "#F5D78A",
                 textShadow: "0 0 40px rgba(212,168,67,0.6), 0 2px 8px rgba(0,0,0,0.9), 0 0 80px rgba(212,168,67,0.25)"
@@ -72,7 +72,6 @@ export const HeroSection: React.FC = () => {
             >
               <TextScramble text="ENIGMA 2026" autostart={true} periodicInterval={5000} />
             </h1>
-
           </div>
         </div>
 
