@@ -72,58 +72,67 @@ export const TimelineSection: React.FC = () => {
         </p>
       </div>
 
-      {/* DESKTOP HORIZONTAL CABLE TIMELINE (≥ 1024px) — shows first 5 */}
-      <div className="hidden lg:block relative pt-12 pb-16">
-        <div className="absolute top-[112px] left-8 right-8 h-1 bg-[#B87333]/80 rounded-full z-0 glow-copper-border" />
+      {/* DESKTOP HORIZONTAL CABLE TIMELINE (≥ 1024px) */}
+      <div className="hidden lg:block space-y-16 pb-12">
+        {/* ROW 1: Stages 01 to 04 */}
+        <div className="relative">
+          {/* Copper Cable Line passing through center of nodes */}
+          <div className="absolute top-[52px] left-12 right-12 h-1 bg-[#B87333]/80 rounded-full z-0 glow-copper-border" />
 
-        <div className="grid grid-cols-4 gap-6 relative z-10">
-          {events.slice(0, 4).map((evt, idx) => (
-            <div key={idx} className="flex flex-col items-center text-center group">
-              <div className="font-mono-code text-xs text-[#D4A843] mb-3 bg-[#0A0A0A] px-3 py-1 border border-[#D4A843]/40 rounded-lg">
-                {evt.stage}
-              </div>
-
-              <div className="relative mb-6">
-                <div className="w-10 h-10 rounded-full bg-[#1C1C1E] border-2 border-[#D4A843] flex items-center justify-center shadow-[0_0_20px_rgba(212,168,67,0.6)] group-hover:scale-110 transition-transform">
-                  <div className="w-4 h-4 rounded-full bg-[#D4A843] animate-pulse" />
+          <div className="grid grid-cols-4 gap-6 relative z-10">
+            {events.slice(0, 4).map((evt, idx) => (
+              <div key={idx} className="flex flex-col items-center text-center group">
+                <div className="font-mono-code text-xs text-[#D4A843] mb-3 bg-[#0A0A0A] px-3 py-1 border border-[#D4A843]/40 rounded-lg">
+                  {evt.stage}
                 </div>
-                <Lightbulb size={16} className="text-[#D4A843] absolute -top-1 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </div>
 
-              <div className="bg-[#1C1C1E] border border-[#B87333] p-5 rounded-2xl w-full flex-1 flex flex-col justify-between group-hover:border-[#D4A843] transition-colors shadow-lg">
-                <div>
-                  <h3 className="font-serif-heading text-sm font-bold text-[#E5E5E7] mb-2 group-hover:text-[#D4A843] transition-colors">
-                    <TextScramble text={evt.title} hoverToScramble={true} />
-                  </h3>
-                  <div className="font-mono-code text-xs text-[#39FF14] mb-3 flex items-center justify-center gap-1.5 glow-green">
-                    <Calendar size={13} />
-                    <span>{evt.date}</span>
+                <div className="relative mb-6">
+                  <div className="w-10 h-10 rounded-full bg-[#1C1C1E] border-2 border-[#D4A843] flex items-center justify-center shadow-[0_0_20px_rgba(212,168,67,0.6)] group-hover:scale-110 transition-transform">
+                    <div className="w-4 h-4 rounded-full bg-[#D4A843] animate-pulse" />
                   </div>
-                  <p className="font-sans text-xs text-[#8E8E93] leading-relaxed">{evt.desc}</p>
+                  <Lightbulb size={16} className="text-[#D4A843] absolute -top-1 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
-                <div className="mt-4 pt-3 border-t border-[#B87333]/30 font-mono-code text-[10px] text-[#D4A843]/70 flex items-center justify-center gap-1">
-                  <Clock size={12} />
-                  <span>STATUS: {evt.status}</span>
+
+                <div className="bg-[#1C1C1E] border border-[#B87333] p-5 rounded-2xl w-full flex-1 flex flex-col justify-between group-hover:border-[#D4A843] transition-colors shadow-lg">
+                  <div>
+                    <h3 className="font-serif-heading text-sm font-bold text-[#E5E5E7] mb-2 group-hover:text-[#D4A843] transition-colors">
+                      <TextScramble text={evt.title} hoverToScramble={true} />
+                    </h3>
+                    <div className="font-mono-code text-xs text-[#39FF14] mb-3 flex items-center justify-center gap-1.5 glow-green">
+                      <Calendar size={13} />
+                      <span>{evt.date}</span>
+                    </div>
+                    <p className="font-sans text-xs text-[#8E8E93] leading-relaxed">{evt.desc}</p>
+                  </div>
+                  <div className="mt-4 pt-3 border-t border-[#B87333]/30 font-mono-code text-[10px] text-[#D4A843]/70 flex items-center justify-center gap-1">
+                    <Clock size={12} />
+                    <span>STATUS: {evt.status}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        {/* Second row: remaining 3 events */}
-        <div className="mt-16 relative">
-          <div className="absolute top-[112px] left-8 right-8 h-1 bg-[#B87333]/80 rounded-full z-0 glow-copper-border" />
-          <div className="grid grid-cols-3 gap-6 relative z-10 max-w-3xl mx-auto">
+        {/* ROW 2: Stages 05 to 07 */}
+        <div className="relative max-w-5xl mx-auto">
+          {/* Copper Cable Line passing through center of nodes */}
+          <div className="absolute top-[52px] left-16 right-16 h-1 bg-[#B87333]/80 rounded-full z-0 glow-copper-border" />
+
+          <div className="grid grid-cols-3 gap-6 relative z-10">
             {events.slice(4).map((evt, idx) => (
               <div key={idx} className="flex flex-col items-center text-center group">
                 <div className="font-mono-code text-xs text-[#D4A843] mb-3 bg-[#0A0A0A] px-3 py-1 border border-[#D4A843]/40 rounded-lg">
                   {evt.stage}
                 </div>
+
                 <div className="relative mb-6">
                   <div className="w-10 h-10 rounded-full bg-[#1C1C1E] border-2 border-[#D4A843] flex items-center justify-center shadow-[0_0_20px_rgba(212,168,67,0.6)] group-hover:scale-110 transition-transform">
                     <div className="w-4 h-4 rounded-full bg-[#D4A843] animate-pulse" />
                   </div>
+                  <Lightbulb size={16} className="text-[#D4A843] absolute -top-1 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
+
                 <div className="bg-[#1C1C1E] border border-[#B87333] p-5 rounded-2xl w-full flex-1 flex flex-col justify-between group-hover:border-[#D4A843] transition-colors shadow-lg">
                   <div>
                     <h3 className="font-serif-heading text-sm font-bold text-[#E5E5E7] mb-2 group-hover:text-[#D4A843] transition-colors">
