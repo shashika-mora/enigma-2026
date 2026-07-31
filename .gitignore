@@ -53,3 +53,5 @@ Thumbs.db
 .idea/
 
 # CRITICAL NOTE: Media assets (images, webm, png, jpg, avif, svg) in /public/ are explicitly tracked by Git as per Enigma 2026 repository guidelines. DO NOT ADD *.jpg, *.png, *.avif, or /public/ to this gitignore.
+
+info.md

@@ -112,7 +112,7 @@ export const HeroSection: React.FC = () => {
           <a href="#registration" className="w-full sm:w-auto">
             <GlowingButton variant="amber" className="w-full sm:w-auto">
               <Terminal size={16} />
-              <TextScramble text="BEGIN CRYPTANALYSIS" />
+              <TextScramble text="REGISTER NOW" />
               <ArrowRight size={16} />
             </GlowingButton>
           </a>
