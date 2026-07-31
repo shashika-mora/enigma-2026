@@ -202,13 +202,8 @@ export const RegistrationSection: React.FC = () => {
               <div><span className="text-[#39FF14]">STATUS:</span> DOSSIER SUBMITTED &amp; PENDING VERIFICATION</div>
             </div>
 
-            <div className="pt-4">
-              <button
-                onClick={resetForm}
-                className="font-mono-code text-xs text-[#D4A843] hover:underline cursor-pointer"
-              >
-                [ SUBMIT ANOTHER DOSSIER ]
-              </button>
+            <div className="pt-2 text-[11px] text-[#39FF14] tracking-widest">
+              &gt; OFFICIAL CONFIRMATION SENT TO TEAM LEADER
             </div>
           </div>
         ) : (

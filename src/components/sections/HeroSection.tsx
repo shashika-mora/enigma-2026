@@ -52,7 +52,7 @@ export const HeroSection: React.FC = () => {
 
           {/* Combined caption */}
           <span className="font-mono-code text-[10px] sm:text-xs text-white/50 tracking-[0.2em] uppercase">
-            Maths Society, University of Moratuwa
+            Mathamatics Society, University of Moratuwa
           </span>
         </div>
 
