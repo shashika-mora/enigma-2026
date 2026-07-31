@@ -53,7 +53,7 @@ export const Navbar: React.FC = () => {
             <Link
               key={link.name}
               href={link.href}
-              className="font-mono-code text-xs text-[#E5E5E7]/85 hover:text-[#D4A843] transition-colors tracking-wider flex items-center gap-1 group py-2"
+              className="font-mono-code font-semibold text-xs text-[#E5E5E7]/90 hover:text-[#D4A843] transition-colors tracking-wider uppercase flex items-center gap-1 group py-2"
             >
               <span className="text-[#39FF14] opacity-0 group-hover:opacity-100 transition-opacity font-bold">
                 &gt;

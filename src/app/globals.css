@@ -26,6 +26,11 @@
 }
 
 .font-mono-code {
+  font-family: var(--font-inter), sans-serif;
+  letter-spacing: 0.06em;
+}
+
+.font-code-raw {
   font-family: var(--font-jetbrains), monospace;
 }
 
