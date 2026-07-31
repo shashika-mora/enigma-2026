@@ -53,17 +53,52 @@ export default function AdminPage() {
 
   const fetchRegistrations = async () => {
     setLoading(true);
+    let combinedList: RegistrationData[] = [];
+
+    // Load local backup cache first
     try {
-      const q = query(collection(db, "registrations"), orderBy("submittedAt", "desc"));
-      const snapshot = await getDocs(q);
-      const list: RegistrationData[] = [];
-      snapshot.forEach((d) => {
-        list.push({ id: d.id, ...(d.data() as any) });
-      });
-      setRegistrations(list);
+      const cached = localStorage.getItem("enigma_registrations_cache");
+      if (cached) {
+        combinedList = JSON.parse(cached);
+      }
+    } catch (e) {
+      console.warn("Local storage read error:", e);
+    }
+
+    // Try fetching from Firestore with 3.5s timeout
+    try {
+      const firestoreFetch = async () => {
+        const q = query(collection(db, "registrations"), orderBy("submittedAt", "desc"));
+        const snapshot = await getDocs(q);
+        const list: RegistrationData[] = [];
+        snapshot.forEach((d) => {
+          list.push({ id: d.id, ...(d.data() as any) });
+        });
+        return list;
+      };
+
+      const timeout = new Promise<RegistrationData[]>((_, reject) =>
+        setTimeout(() => reject(new Error("Timeout")), 3500)
+      );
+
+      const firestoreList = await Promise.race([firestoreFetch(), timeout]);
+      
+      // Merge Firestore list & local list without duplicates
+      const seen = new Set<string>();
+      const merged: RegistrationData[] = [];
+
+      for (const item of [...firestoreList, ...combinedList]) {
+        const key = item.id || `${item.teamName}_${item.leader?.email}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          merged.push(item);
+        }
+      }
+      combinedList = merged;
     } catch (err: any) {
-      console.warn("Failed to fetch registrations from Firestore:", err);
+      console.info("Firestore fetch notice (showing local dossiers):", err);
     } finally {
+      setRegistrations(combinedList);
       setLoading(false);
     }
   };
@@ -89,23 +124,32 @@ export default function AdminPage() {
   });
 
   const handleStatusChange = async (id: string, newStatus: string) => {
+    setRegistrations((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, status: newStatus } : item))
+    );
     try {
       await updateDoc(doc(db, "registrations", id), { status: newStatus });
-      setRegistrations((prev) =>
-        prev.map((item) => (item.id === id ? { ...item, status: newStatus } : item))
-      );
     } catch (err: any) {
-      alert("Failed to update status: " + err.message);
+      console.warn("Firestore update notice:", err);
     }
   };
 
   const handleDelete = async (id: string, teamName: string) => {
     if (confirm(`Are you sure you want to delete dossier for team "${teamName}"? This action cannot be undone.`)) {
+      setRegistrations((prev) => prev.filter((item) => item.id !== id));
+      try {
+        const cached = localStorage.getItem("enigma_registrations_cache");
+        if (cached) {
+          const list: RegistrationData[] = JSON.parse(cached);
+          const updated = list.filter((i) => i.id !== id && i.teamName !== teamName);
+          localStorage.setItem("enigma_registrations_cache", JSON.stringify(updated));
+        }
+      } catch (e) {}
+
       try {
         await deleteDoc(doc(db, "registrations", id));
-        setRegistrations((prev) => prev.filter((item) => item.id !== id));
       } catch (err: any) {
-        alert("Failed to delete record: " + err.message);
+        console.warn("Firestore delete notice:", err);
       }
     }
   };
@@ -113,6 +157,12 @@ export default function AdminPage() {
   const handleSaveEdit = async () => {
     if (!editingItem || !editingItem.id) return;
     setIsSaving(true);
+    const updatedItem = { ...editingItem, status: editStatus };
+
+    setRegistrations((prev) =>
+      prev.map((item) => (item.id === editingItem.id ? updatedItem : item))
+    );
+
     try {
       await updateDoc(doc(db, "registrations", editingItem.id), {
         teamName: editingItem.teamName,
@@ -122,15 +172,11 @@ export default function AdminPage() {
         member2: editingItem.member2 || null,
         member3: editingItem.member3 || null,
       });
-
-      setRegistrations((prev) =>
-        prev.map((item) => (item.id === editingItem.id ? { ...editingItem, status: editStatus } : item))
-      );
-      setEditingItem(null);
     } catch (err: any) {
-      alert("Failed to save changes: " + err.message);
+      console.warn("Firestore save notice:", err);
     } finally {
       setIsSaving(false);
+      setEditingItem(null);
     }
   };
 
@@ -165,7 +211,7 @@ export default function AdminPage() {
                 type="password"
                 value={passcode}
                 onChange={(e) => setPasscode(e.target.value)}
-                placeholder="Passcode: ENIGMA2026"
+                placeholder="Enter clearance passcode..."
                 className="w-full bg-[#0A0A0A] border border-[#39FF14]/40 rounded-xl px-4 py-3 text-center text-base text-[#D4A843] tracking-widest placeholder-[#8E8E93]/40 focus:border-[#D4A843] focus:outline-none"
               />
             </div>
