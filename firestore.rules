@@ -1,8 +1,15 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /registrations/{document=**} {
-      allow read, create, update, delete: if true;
+    match /registrations/{document} {
+      // Public students can submit registration dossiers with proper structure
+      allow create: if request.resource.data.keys().hasAll(['teamName', 'university', 'memberCount', 'leader', 'status'])
+                    && request.resource.data.status == 'PENDING'
+                    && request.resource.data.memberCount >= 1 
+                    && request.resource.data.memberCount <= 3;
+      
+      // Only authenticated admin users can read, update, or delete registrations
+      allow read, update, delete: if request.auth != null;
     }
   }
 }

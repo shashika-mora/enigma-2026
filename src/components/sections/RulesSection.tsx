@@ -17,7 +17,7 @@ const rules = [
   },
   {
     icon: Users,
-    color: "#39FF14",
+    color: "#D4A843",
     title: "TEAM STRUCTURE",
     items: [
       "Participants may compete individually or in teams of 1 to 3 members.",

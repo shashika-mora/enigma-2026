@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { db } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
+import { signInAnonymously } from "firebase/auth";
 import { collection, getDocs, doc, updateDoc, deleteDoc, query, orderBy } from "firebase/firestore";
 import { exportRegistrationsToCSV, RegistrationData } from "@/lib/csvExport";
 import {
@@ -40,9 +41,14 @@ export default function AdminPage() {
   // Default Passcode for Organizers (Can be updated as needed)
   const ADMIN_PASSCODE = "ENIGMA2026";
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (passcode.trim() === ADMIN_PASSCODE) {
+      try {
+        await signInAnonymously(auth);
+      } catch (err) {
+        console.info("Firebase auth session notice:", err);
+      }
       setIsAuthenticated(true);
       setAuthError("");
       fetchRegistrations();

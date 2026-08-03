@@ -19,6 +19,24 @@ export const Footer: React.FC = () => {
 
         <div className="w-16 h-0.5 bg-[#B87333] mx-auto opacity-60" />
 
+        {/* Brand Logos */}
+        <div className="flex items-center justify-center gap-4 pt-2">
+          <div className="relative w-11 h-11 border border-[#D4A843]/60 p-1 flex items-center justify-center bg-[#1C1C1E] rounded-xl shadow-lg">
+            <img
+              src="/maths_society.png"
+              alt="Mathematics Society"
+              className="w-8 h-8 object-contain"
+            />
+          </div>
+          <div className="relative w-11 h-11 border border-[#D4A843]/60 p-1 flex items-center justify-center bg-[#1C1C1E] rounded-xl shadow-lg">
+            <img
+              src="/enigma-icon.png"
+              alt="Enigma Emblem"
+              className="w-8 h-8 object-contain"
+            />
+          </div>
+        </div>
+
         {/* Mathematics Society Credentials */}
         <div className="space-y-2">
           <div className="font-serif-heading text-lg font-bold text-[#E5E5E7] tracking-wider">

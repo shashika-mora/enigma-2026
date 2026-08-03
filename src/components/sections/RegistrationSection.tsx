@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { TextScramble } from "@/components/ui/TextScramble";
 import { GlowingButton } from "@/components/ui/GlowingButton";
 import { db } from "@/lib/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { Terminal, ShieldCheck, CheckCircle2, AlertCircle, Loader2, User, Users, Plus, Trash2 } from "lucide-react";
 
 interface MemberDetails {
@@ -43,6 +43,19 @@ export const RegistrationSection: React.FC = () => {
 
   const [status, setStatus] = useState<"idle" | "loading" | "granted" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const clearError = () => {
+    if (status === "error") {
+      setStatus("idle");
+      setErrorMessage("");
+    }
+  };
+
+  const handleMemberCountChange = (count: number) => {
+    setMemberCount(count);
+    clearError();
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,23 +73,47 @@ export const RegistrationSection: React.FC = () => {
       return;
     }
 
-    if (memberCount >= 2 && (!member2.fullName.trim() || !member2.email.trim() || !member2.phone.trim())) {
-      setErrorMessage("COMMAND ERROR: Member 2 Full Name, Email, and Phone are required.");
+    if (!isValidEmail(leader.email.trim())) {
+      setErrorMessage("COMMAND ERROR: Team Leader Email format is invalid.");
       setStatus("error");
       return;
     }
 
-    if (memberCount === 3 && (!member3.fullName.trim() || !member3.email.trim() || !member3.phone.trim())) {
-      setErrorMessage("COMMAND ERROR: Member 3 Full Name, Email, and Phone are required.");
-      setStatus("error");
-      return;
+    if (memberCount >= 2) {
+      if (!member2.fullName.trim() || !member2.email.trim() || !member2.phone.trim()) {
+        setErrorMessage("COMMAND ERROR: Member 2 Full Name, Email, and Phone are required.");
+        setStatus("error");
+        return;
+      }
+      if (!isValidEmail(member2.email.trim())) {
+        setErrorMessage("COMMAND ERROR: Member 2 Email format is invalid.");
+        setStatus("error");
+        return;
+      }
+    }
+
+    if (memberCount === 3) {
+      if (!member3.fullName.trim() || !member3.email.trim() || !member3.phone.trim()) {
+        setErrorMessage("COMMAND ERROR: Member 3 Full Name, Email, and Phone are required.");
+        setStatus("error");
+        return;
+      }
+      if (!isValidEmail(member3.email.trim())) {
+        setErrorMessage("COMMAND ERROR: Member 3 Email format is invalid.");
+        setStatus("error");
+        return;
+      }
     }
 
     setStatus("loading");
     setErrorMessage("");
 
+    // Generate Firestore document reference ID upfront to ensure local & remote ID match
+    const newDocRef = doc(collection(db, "registrations"));
+    const dossierId = newDocRef.id;
+
     const dossierPayload: any = {
-      id: "reg_" + Date.now(),
+      id: dossierId,
       teamName: teamName.trim(),
       university: university.trim(),
       memberCount,
@@ -112,15 +149,17 @@ export const RegistrationSection: React.FC = () => {
     try {
       const existingStr = localStorage.getItem("enigma_registrations_cache");
       const existingList = existingStr ? JSON.parse(existingStr) : [];
-      existingList.unshift(dossierPayload);
-      localStorage.setItem("enigma_registrations_cache", JSON.stringify(existingList));
+      // Prevent duplicate entry if already present
+      const filtered = existingList.filter((item: any) => item.id !== dossierId);
+      filtered.unshift(dossierPayload);
+      localStorage.setItem("enigma_registrations_cache", JSON.stringify(filtered));
     } catch (e) {
       console.warn("LocalStorage save notice:", e);
     }
 
     // Race Firestore write against a 3.5s timeout so UI never hangs
     try {
-      const firestorePromise = addDoc(collection(db, "registrations"), {
+      const firestorePromise = setDoc(newDocRef, {
         ...dossierPayload,
         submittedAt: serverTimestamp(),
       });
@@ -262,7 +301,7 @@ export const RegistrationSection: React.FC = () => {
                       <button
                         type="button"
                         key={count}
-                        onClick={() => setMemberCount(count)}
+                        onClick={() => handleMemberCountChange(count)}
                         className={`py-2 rounded-xl font-bold border transition-all text-center ${memberCount === count
                           ? "bg-[#D4A843] text-black border-[#D4A843] shadow-[0_0_12px_rgba(212,168,67,0.5)]"
                           : "bg-[#0A0A0A] text-[#8E8E93] border-[#B87333]/40 hover:border-[#D4A843] hover:text-white"
@@ -304,7 +343,7 @@ export const RegistrationSection: React.FC = () => {
                     type="email"
                     value={leader.email}
                     onChange={(e) => setLeader({ ...leader, email: e.target.value })}
-                    placeholder="turing@bletchley.ac.lk"
+                    placeholder="e.g. turing@bletchley.ac.lk"
                     className="w-full bg-[#0A0A0A] border border-[#39FF14]/40 rounded-xl px-3.5 py-2.5 text-[#E5E5E7] placeholder-[#8E8E93]/50 focus:border-[#D4A843] focus:outline-none"
                   />
                 </div>
@@ -315,7 +354,7 @@ export const RegistrationSection: React.FC = () => {
                     type="tel"
                     value={leader.phone}
                     onChange={(e) => setLeader({ ...leader, phone: e.target.value })}
-                    placeholder="+94 77 123 4567"
+                    placeholder="e.g. +94 77 123 4567"
                     className="w-full bg-[#0A0A0A] border border-[#39FF14]/40 rounded-xl px-3.5 py-2.5 text-[#E5E5E7] placeholder-[#8E8E93]/50 focus:border-[#D4A843] focus:outline-none"
                   />
                 </div>
