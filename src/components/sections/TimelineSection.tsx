@@ -4,56 +4,48 @@ import React from "react";
 import { TextScramble } from "@/components/ui/TextScramble";
 import { Calendar, Clock, Lightbulb } from "lucide-react";
 
-// TODO: Replace placeholder dates with confirmed 2026 event dates
 const events = [
   {
     stage: "STAGE 01",
     title: "REGISTRATIONS OPEN",
-    date: "TBD — 2026",   // Last year: 28 July
-    status: "UPCOMING",
-    desc: "Registration portal opens for all undergraduate participants. Individual or team sign-ups accepted.",
+    date: "5 August 2026",
+    status: "OPEN NOW",
+    desc: "Registration portal opens for all undergraduate participants. Teams of 1–3 members from any Sri Lankan university are welcome.",
   },
   {
     stage: "STAGE 02",
-    title: "AWARENESS SESSION",
-    date: "TBD — 2026",   // Last year: 3 August
+    title: "REGISTRATION DEADLINE",
+    date: "19 August 2026",
     status: "UPCOMING",
-    desc: "Introductory online session covering competition format, rules, and HackerRank platform walkthrough.",
+    desc: "Final deadline to complete registration. No late entries will be accepted after this date. Secure your spot early.",
   },
   {
     stage: "STAGE 03",
-    title: "REGISTRATION DEADLINE",
-    date: "TBD — 2026",   // Last year: 10 August
-    status: "UPCOMING",
-    desc: "Final deadline to complete registration. No late entries will be accepted after this date.",
-  },
-  {
-    stage: "STAGE 04",
     title: "WORKSHOP I",
-    date: "TBD — 2026",   // Last year: 16 August
+    date: "20 August 2026",
     status: "UPCOMING",
     desc: "First online workshop — foundational mathematical concepts for competitive problem solving and algorithmic thinking.",
   },
   {
-    stage: "STAGE 05",
-    title: "VIRTUAL HACKATHON",
-    date: "TBD — 2026",   // Last year: 20 August
+    stage: "STAGE 04",
+    title: "WORKSHOP II",
+    date: "25 August 2026",
     status: "UPCOMING",
-    desc: "6-hour qualifying round via HackerRank. Compete individually or in teams of 1–3. Top 10 advance to the finale.",
+    desc: "Second online workshop — advanced strategies and problem-solving techniques to sharpen your edge for the hackathon rounds.",
+  },
+  {
+    stage: "STAGE 05",
+    title: "ONLINE HACKATHON",
+    date: "29 August 2026",
+    status: "UPCOMING",
+    desc: "6-hour qualifying round via HackerRank. Compete individually or in teams of 1–3. Top 10 teams advance to the on-campus finale.",
   },
   {
     stage: "STAGE 06",
-    title: "WORKSHOP II",
-    date: "TBD — 2026",   // Last year: 23 August
+    title: "PHYSICAL HACKATHON FINAL",
+    date: "19 September 2026",
     status: "UPCOMING",
-    desc: "Second online workshop — advanced strategies and problem-solving techniques to prepare finalists for the on-campus round.",
-  },
-  {
-    stage: "STAGE 07",
-    title: "FINAL HACKATHON",
-    date: "TBD — 2026",   // Last year: 27 September
-    status: "UPCOMING",
-    desc: "4-hour on-campus finale at the University of Moratuwa. Top 10 qualifiers compete for cash prizes.",
+    desc: "4-hour on-campus finale at the University of Moratuwa. Top 10 qualifiers compete head-to-head for prestigious cash prizes.",
   },
 ];
 
@@ -74,13 +66,13 @@ export const TimelineSection: React.FC = () => {
 
       {/* DESKTOP HORIZONTAL CABLE TIMELINE (≥ 1024px) */}
       <div className="hidden lg:block space-y-16 pb-12">
-        {/* ROW 1: Stages 01 to 04 */}
+        {/* ROW 1: Stages 01 to 03 */}
         <div className="relative">
           {/* Copper Cable Line passing through center of nodes */}
           <div className="absolute top-[52px] left-12 right-12 h-1 bg-[#B87333]/80 rounded-full z-0 glow-copper-border" />
 
-          <div className="grid grid-cols-4 gap-6 relative z-10">
-            {events.slice(0, 4).map((evt, idx) => (
+          <div className="grid grid-cols-3 gap-6 relative z-10">
+            {events.slice(0, 3).map((evt, idx) => (
               <div key={idx} className="flex flex-col items-center text-center group">
                 <div className="font-mono-code text-xs text-[#D4A843] mb-3 bg-[#0A0A0A] px-3 py-1 border border-[#D4A843]/40 rounded-lg">
                   {evt.stage}
@@ -104,7 +96,7 @@ export const TimelineSection: React.FC = () => {
                     </div>
                     <p className="font-sans text-xs text-[#8E8E93] leading-relaxed">{evt.desc}</p>
                   </div>
-                  <div className="mt-4 pt-3 border-t border-[#B87333]/30 font-mono-code text-[10px] text-[#D4A843]/70 flex items-center justify-center gap-1">
+                  <div className={`mt-4 pt-3 border-t border-[#B87333]/30 font-mono-code text-[10px] flex items-center justify-center gap-1 ${evt.status === 'OPEN NOW' ? 'text-[#39FF14]' : 'text-[#D4A843]/70'}`}>
                     <Clock size={12} />
                     <span>STATUS: {evt.status}</span>
                   </div>
@@ -114,13 +106,13 @@ export const TimelineSection: React.FC = () => {
           </div>
         </div>
 
-        {/* ROW 2: Stages 05 to 07 */}
+        {/* ROW 2: Stages 04 to 06 */}
         <div className="relative max-w-5xl mx-auto">
           {/* Copper Cable Line passing through center of nodes */}
           <div className="absolute top-[52px] left-16 right-16 h-1 bg-[#B87333]/80 rounded-full z-0 glow-copper-border" />
 
           <div className="grid grid-cols-3 gap-6 relative z-10">
-            {events.slice(4).map((evt, idx) => (
+            {events.slice(3).map((evt, idx) => (
               <div key={idx} className="flex flex-col items-center text-center group">
                 <div className="font-mono-code text-xs text-[#D4A843] mb-3 bg-[#0A0A0A] px-3 py-1 border border-[#D4A843]/40 rounded-lg">
                   {evt.stage}
@@ -144,7 +136,7 @@ export const TimelineSection: React.FC = () => {
                     </div>
                     <p className="font-sans text-xs text-[#8E8E93] leading-relaxed">{evt.desc}</p>
                   </div>
-                  <div className="mt-4 pt-3 border-t border-[#B87333]/30 font-mono-code text-[10px] text-[#D4A843]/70 flex items-center justify-center gap-1">
+                  <div className={`mt-4 pt-3 border-t border-[#B87333]/30 font-mono-code text-[10px] flex items-center justify-center gap-1 ${evt.status === 'OPEN NOW' ? 'text-[#39FF14]' : 'text-[#D4A843]/70'}`}>
                     <Clock size={12} />
                     <span>STATUS: {evt.status}</span>
                   </div>
