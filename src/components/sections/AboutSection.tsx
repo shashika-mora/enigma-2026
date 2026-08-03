@@ -80,10 +80,10 @@ export const AboutSection: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-3 bg-[#0A0A0A] border border-[#39FF14]/30 rounded-xl flex items-start gap-3">
-              <Lightbulb className="text-[#39FF14] shrink-0 mt-0.5" size={16} />
+            <div className="p-3 bg-[#0A0A0A] border border-[#D4A843]/30 rounded-xl flex items-start gap-3">
+              <Lightbulb className="text-[#D4A843] shrink-0 mt-0.5" size={16} />
               <div>
-                <div className="text-[#39FF14] font-bold">LOGICAL SYNTHESIS</div>
+                <div className="text-[#D4A843] font-bold">LOGICAL SYNTHESIS</div>
                 <div className="text-[#8E8E93] text-[11px] mt-0.5">Codebreaking Mechanics</div>
               </div>
             </div>
