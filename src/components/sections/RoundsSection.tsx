@@ -44,7 +44,7 @@ export const RoundsSection: React.FC = () => {
       id: "PHASE 02",
       name: "FINAL HACKATHON",
       icon: MapPin,
-      iconColor: "#39FF14",
+      iconColor: "#D4A843",
       tag: "GRAND FINALE",
       badge: "ON-CAMPUS · UOM",
       description:
@@ -55,7 +55,11 @@ export const RoundsSection: React.FC = () => {
         "Top 10 Qualifiers Only",
         "Top 3 Win Cash Prizes",
       ],
-      prize: "CASH PRIZES FOR TOP 3",
+      prizes: [
+        { place: "1ST", label: "CHAMPION", color: "#D4A843" },
+        { place: "2ND", label: "1ST RUNNER UP", color: "#B87333" },
+        { place: "3RD", label: "2ND RUNNER UP", color: "#8E8E93" },
+      ],
     },
   ];
 
@@ -123,21 +127,38 @@ export const RoundsSection: React.FC = () => {
                   ))}
                 </div>
 
-                {/* Prize Banner */}
-                {phase.prize && (
-                  <div className="mt-4 flex items-center gap-2 bg-[#D4A843]/10 border border-[#D4A843]/50 rounded-xl px-4 py-2">
-                    <Trophy size={14} className="text-[#D4A843]" />
-                    <span className="font-mono-code text-[10px] text-[#D4A843] tracking-widest">{phase.prize}</span>
-                  </div>
-                )}
               </div>
             </div>
           );
         })}
       </div>
 
+      {/* Cash Prize Podium — between cards and progression bar */}
+      <div className="mt-6 bg-[#1C1C1E] border border-[#D4A843]/30 rounded-2xl px-6 py-5">
+        <div className="flex items-center gap-2 mb-4">
+          <Trophy size={14} className="text-[#D4A843]" />
+          <span className="font-mono-code text-[10px] text-[#D4A843] tracking-widest uppercase">Cash Prizes — Final Hackathon · Top 3</span>
+        </div>
+        <div className="grid grid-cols-3 gap-4">
+          {[
+            { place: "1ST", label: "CHAMPION", color: "#D4A843" },
+            { place: "2ND", label: "1ST RUNNER UP", color: "#B87333" },
+            { place: "3RD", label: "2ND RUNNER UP", color: "#8E8E93" },
+          ].map((p) => (
+            <div
+              key={p.place}
+              className="flex flex-col items-center justify-center py-4 rounded-xl border bg-[#0A0A0A]"
+              style={{ borderColor: `${p.color}50` }}
+            >
+              <span className="font-mono-code text-2xl font-bold" style={{ color: p.color }}>{p.place}</span>
+              <span className="font-mono-code text-[9px] tracking-widest mt-1" style={{ color: p.color }}>{p.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Phase Progression Cable */}
-      <div className="mt-12 sm:mt-16 bg-[#1C1C1E] border border-[#B87333]/40 p-5 sm:p-6 rounded-2xl">
+      <div className="mt-6 sm:mt-8 bg-[#1C1C1E] border border-[#B87333]/40 p-5 sm:p-6 rounded-2xl">
         <div className="font-mono-code text-xs text-[#D4A843] mb-4 text-center">
           PHASE PROGRESSION // REGISTRATION → WORKSHOPS → VIRTUAL ROUND → ON-CAMPUS FINALE
         </div>
@@ -148,7 +169,7 @@ export const RoundsSection: React.FC = () => {
           {[
             { label: "WORKSHOPS", color: "#B87333" },
             { label: "VIRTUAL ROUND", color: "#D4A843" },
-            { label: "FINALE", color: "#39FF14" },
+            { label: "FINALE", color: "#D4A843" },
           ].map(({ label, color }) => (
             <div key={label} className="relative z-10 flex flex-col items-center bg-[#0A0A0A] px-2 sm:px-4 py-2 border rounded-xl" style={{ borderColor: color }}>
               <span className="w-3 h-3 rounded-full animate-pulse mb-1" style={{ backgroundColor: color }} />

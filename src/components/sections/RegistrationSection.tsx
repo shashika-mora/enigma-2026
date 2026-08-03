@@ -169,7 +169,7 @@ export const RegistrationSection: React.FC = () => {
           <div className="flex items-center gap-2 text-[#39FF14]">
             <Terminal size={18} />
             <span className="font-bold text-xs sm:text-base tracking-tight">
-              &gt;&gt; ENIGMA CLEARANCE APPLICATION &lt;&lt;
+              ENIGMA CLEARANCE APPLICATION
             </span>
           </div>
           <div className="flex items-center gap-2 text-[#8E8E93] text-[11px]">
@@ -190,7 +190,7 @@ export const RegistrationSection: React.FC = () => {
                 ACCESS GRANTED
               </h3>
               <p className="text-[#39FF14] text-xs sm:text-sm tracking-widest">
-                &gt; DOSSIER ENCRYPTED AND STORED IN FIREBASE
+                &gt; DOSSIER ENCRYPTED AND STORED
               </p>
             </div>
 
@@ -263,11 +263,10 @@ export const RegistrationSection: React.FC = () => {
                         type="button"
                         key={count}
                         onClick={() => setMemberCount(count)}
-                        className={`py-2 rounded-xl font-bold border transition-all text-center ${
-                          memberCount === count
-                            ? "bg-[#D4A843] text-black border-[#D4A843] shadow-[0_0_12px_rgba(212,168,67,0.5)]"
-                            : "bg-[#0A0A0A] text-[#8E8E93] border-[#B87333]/40 hover:border-[#D4A843] hover:text-white"
-                        }`}
+                        className={`py-2 rounded-xl font-bold border transition-all text-center ${memberCount === count
+                          ? "bg-[#D4A843] text-black border-[#D4A843] shadow-[0_0_12px_rgba(212,168,67,0.5)]"
+                          : "bg-[#0A0A0A] text-[#8E8E93] border-[#B87333]/40 hover:border-[#D4A843] hover:text-white"
+                          }`}
                       >
                         {count} {count === 1 ? "Member" : "Members"}
                       </button>

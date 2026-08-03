@@ -1,18 +1,12 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
+import { Github } from "lucide-react";
 import { TextScramble } from "@/components/ui/TextScramble";
 
 export const Footer: React.FC = () => {
   return (
     <footer className="relative bg-[#0A0A0A] border-t border-[#B87333]/40 pt-20 pb-12 px-4 overflow-hidden">
-      {/* Background Cipher Stream Fading Block */}
-      <div className="absolute inset-0 select-none font-mono-code text-[10px] text-[#39FF14]/5 p-8 flex flex-col justify-between pointer-events-none">
-        <div>XKQZM RPTLW BNGHS 01010101 ALAN TURING BLETCHLEY PARK 1940 MATHS MORATUWA</div>
-        <div>010101 101010 ENIGMA 2026 UNBROKEN CIPHER MATHEMATICAL VICTORY PUZZLE</div>
-        <div>SOLVED LOGIC ALGORITHM GRAPH THEORY COMBINATORICS QUANTUM CIPHER ENGINE</div>
-      </div>
 
       <div className="relative z-10 max-w-4xl mx-auto text-center space-y-8">
         {/* Quote in Italic Amber Serif */}
@@ -34,8 +28,24 @@ export const Footer: React.FC = () => {
             Organized by Mathematics Society, University of Moratuwa
           </p>
           <p className="font-mono-code text-[11px] text-[#8E8E93]/60">
-            © 2026 Mathematics Society UoM. All Rights Reserved. Classified Clearance Document.
+            © 2026 Mathematics Society UoM. All Rights Reserved.
           </p>
+
+          {/* Designer Credit */}
+          <div className="pt-3 flex items-center justify-center gap-2">
+            <span className="font-mono-code text-[11px] text-[#8E8E93]/50">
+              Designed by Shashika Dayarathna
+            </span>
+            <a
+              href="https://github.com/shashika-mora"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub"
+              className="text-[#8E8E93]/50 hover:text-[#D4A843] transition-colors"
+            >
+              <Github size={15} />
+            </a>
+          </div>
         </div>
       </div>
     </footer>

@@ -141,21 +141,10 @@ export const GallerySection: React.FC = () => {
                   />
 
                   {/* Photo Info Banner overlay at bottom of card */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 sm:p-6 flex items-end justify-between">
-                    <div>
-                      <h3 className="text-white font-serif-heading font-bold text-base sm:text-xl mb-1 glow-amber">
-                        {photo.title}
-                      </h3>
-                      {photo.description && (
-                        <p className="text-[#E5E5E7]/80 font-sans text-xs sm:text-sm line-clamp-1">
-                          {photo.description}
-                        </p>
-                      )}
-                    </div>
-
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 sm:p-5 flex items-end justify-end">
                     {/* ENIGMA Moratuwa Footer Badge inside card */}
                     <div className="hidden sm:flex flex-col items-end font-mono-code text-[10px] text-[#39FF14]">
-                      <span>ENIGMA &apos;24</span>
+                      <span>ENIGMA &apos;25</span>
                       <span className="text-[#8E8E93]">University of Moratuwa</span>
                     </div>
                   </div>
@@ -217,11 +206,11 @@ export const GallerySection: React.FC = () => {
                 />
               </div>
 
-              <div className="p-6 bg-[#0A0A0A] border-t border-[#B87333]/40">
-                <h3 className="text-xl font-serif-heading font-bold text-[#D4A843] mb-1 glow-amber">
-                  {selectedPhoto.title}
-                </h3>
-                <p className="text-[#E5E5E7]/80 font-sans text-sm">{selectedPhoto.description}</p>
+              <div className="p-4 bg-[#0A0A0A] border-t border-[#B87333]/40 flex justify-end">
+                <div className="font-mono-code text-[10px] text-[#39FF14] text-right">
+                  <div>ENIGMA &apos;25</div>
+                  <div className="text-[#8E8E93]">University of Moratuwa</div>
+                </div>
               </div>
             </motion.div>
           </motion.div>
