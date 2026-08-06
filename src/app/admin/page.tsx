@@ -71,20 +71,25 @@ export default function AdminPage() {
       console.warn("Local storage read error:", e);
     }
 
-    // Try fetching from Firestore with 3.5s timeout
+    // Try fetching from Firestore with 12s timeout
     try {
       const firestoreFetch = async () => {
-        const q = query(collection(db, "registrations"), orderBy("submittedAt", "desc"));
-        const snapshot = await getDocs(q);
+        const snapshot = await getDocs(collection(db, "registrations"));
         const list: RegistrationData[] = [];
         snapshot.forEach((d) => {
           list.push({ id: d.id, ...(d.data() as any) });
+        });
+        // Sort locally by submittedAt descending
+        list.sort((a, b) => {
+          const timeA = typeof a.submittedAt === "string" ? a.submittedAt : "";
+          const timeB = typeof b.submittedAt === "string" ? b.submittedAt : "";
+          return timeB.localeCompare(timeA);
         });
         return list;
       };
 
       const timeout = new Promise<RegistrationData[]>((_, reject) =>
-        setTimeout(() => reject(new Error("Timeout")), 3500)
+        setTimeout(() => reject(new Error("Database fetch timeout")), 12000)
       );
 
       const firestoreList = await Promise.race([firestoreFetch(), timeout]);
@@ -102,7 +107,7 @@ export default function AdminPage() {
       }
       combinedList = merged;
     } catch (err: any) {
-      console.info("Firestore fetch notice (showing local dossiers):", err);
+      console.info("Firestore fetch notice:", err);
     } finally {
       setRegistrations(combinedList);
       setLoading(false);

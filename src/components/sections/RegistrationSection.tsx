@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { TextScramble } from "@/components/ui/TextScramble";
 import { GlowingButton } from "@/components/ui/GlowingButton";
 import { db } from "@/lib/firebase";
-import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { Terminal, ShieldCheck, CheckCircle2, AlertCircle, Loader2, User, Users, Plus, Trash2 } from "lucide-react";
 
 interface MemberDetails {
@@ -108,12 +108,7 @@ export const RegistrationSection: React.FC = () => {
     setStatus("loading");
     setErrorMessage("");
 
-    // Generate Firestore document reference ID upfront to ensure local & remote ID match
-    const newDocRef = doc(collection(db, "registrations"));
-    const dossierId = newDocRef.id;
-
     const dossierPayload: any = {
-      id: dossierId,
       teamName: teamName.trim(),
       university: university.trim(),
       memberCount,
@@ -145,34 +140,29 @@ export const RegistrationSection: React.FC = () => {
       };
     }
 
-    // Always backup to localStorage first so data is never lost
     try {
-      const existingStr = localStorage.getItem("enigma_registrations_cache");
-      const existingList = existingStr ? JSON.parse(existingStr) : [];
-      // Prevent duplicate entry if already present
-      const filtered = existingList.filter((item: any) => item.id !== dossierId);
-      filtered.unshift(dossierPayload);
-      localStorage.setItem("enigma_registrations_cache", JSON.stringify(filtered));
-    } catch (e) {
-      console.warn("LocalStorage save notice:", e);
-    }
-
-    // Race Firestore write against a 3.5s timeout so UI never hangs
-    try {
-      const firestorePromise = setDoc(newDocRef, {
+      const docRef = await addDoc(collection(db, "registrations"), {
         ...dossierPayload,
         submittedAt: serverTimestamp(),
       });
 
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Firestore timeout")), 3500)
-      );
+      dossierPayload.id = docRef.id;
 
-      await Promise.race([firestorePromise, timeoutPromise]);
-    } catch (err: any) {
-      console.info("Firestore sync notice (local backup active):", err);
-    } finally {
+      // Backup to localStorage
+      try {
+        const existingStr = localStorage.getItem("enigma_registrations_cache");
+        const existingList = existingStr ? JSON.parse(existingStr) : [];
+        existingList.unshift(dossierPayload);
+        localStorage.setItem("enigma_registrations_cache", JSON.stringify(existingList));
+      } catch (e) {
+        console.warn("LocalStorage save notice:", e);
+      }
+
       setStatus("granted");
+    } catch (err: any) {
+      console.error("Firestore submission error:", err);
+      setErrorMessage(`SUBMISSION ERROR: ${err?.message || "Could not write to database. Please check your connection."}`);
+      setStatus("error");
     }
   };
 
