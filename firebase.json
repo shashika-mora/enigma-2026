@@ -3,6 +3,7 @@
     "rules": "firestore.rules"
   },
   "hosting": {
+    "site": "enigma-2026",
     "public": "out",
     "ignore": [
       "firebase.json",
