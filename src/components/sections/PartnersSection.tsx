@@ -24,7 +24,7 @@ export const PartnersSection: React.FC = () => {
           // ALLIED UNITS &amp; SPONSORS
         </span>
         <h2 className="font-serif-heading text-2xl sm:text-4xl font-bold text-[#D4A843] glow-amber">
-          <TextScramble text="ORGANIZERS &amp; PARTNERS" periodicInterval={7000} />
+          <TextScramble text="ORGANIZERS & PARTNERS" periodicInterval={28000} />
         </h2>
       </div>
 

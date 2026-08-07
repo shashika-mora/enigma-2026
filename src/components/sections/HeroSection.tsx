@@ -70,7 +70,7 @@ export const HeroSection: React.FC = () => {
                 textShadow: "0 0 40px rgba(212,168,67,0.6), 0 2px 8px rgba(0,0,0,0.9), 0 0 80px rgba(212,168,67,0.25)"
               }}
             >
-              <TextScramble text="ENIGMA 2026" autostart={true} periodicInterval={5000} />
+              <TextScramble text="ENIGMA 2026" autostart={true} periodicInterval={22000} />
             </h1>
           </div>
         </div>

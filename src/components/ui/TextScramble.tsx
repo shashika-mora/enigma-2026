@@ -17,7 +17,7 @@ export const TextScramble: React.FC<TextScrambleProps> = ({
   text,
   className = "",
   autostart = true,
-  scrambleSpeed = 35,
+  scrambleSpeed = 65,
   hoverToScramble = true,
   periodicInterval,
 }) => {
@@ -30,7 +30,7 @@ export const TextScramble: React.FC<TextScrambleProps> = ({
     setIsScrambling(true);
 
     let iteration = 0;
-    const maxIterations = text.length * 2.5;
+    const maxIterations = text.length * 1.6;
 
     intervalRef.current = setInterval(() => {
       setDisplayText(
@@ -38,7 +38,7 @@ export const TextScramble: React.FC<TextScrambleProps> = ({
           .split("")
           .map((char, index) => {
             if (char === " ") return " ";
-            if (index < iteration / 2.5) return text[index];
+            if (index < iteration / 1.6) return text[index];
             return CHARS[Math.floor(Math.random() * CHARS.length)];
           })
           .join("")

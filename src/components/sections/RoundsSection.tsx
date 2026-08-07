@@ -133,25 +133,75 @@ export const RoundsSection: React.FC = () => {
         })}
       </div>
 
-      {/* Cash Prize Podium — between cards and progression bar */}
-      <div className="mt-6 bg-[#1C1C1E] border border-[#D4A843]/30 rounded-2xl px-6 py-5">
+      {/* Cash Prize Podium — Gold, Silver, Bronze theme */}
+      <div className="mt-6 bg-[#1C1C1E] border border-[#D4A843]/40 rounded-2xl px-5 sm:px-6 py-6 shadow-xl">
         <div className="flex items-center gap-2 mb-4">
-          <Trophy size={14} className="text-[#D4A843]" />
-          <span className="font-mono-code text-[10px] text-[#D4A843] tracking-widest uppercase">Cash Prizes — Final Hackathon · Top 3</span>
+          <Trophy size={16} className="text-[#FFD700]" />
+          <span className="font-mono-code text-xs text-[#FFD700] tracking-widest uppercase font-bold">
+            CASH PRIZES — FINAL HACKATHON · TOP 3 PODIUM
+          </span>
         </div>
-        <div className="grid grid-cols-3 gap-4">
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
-            { place: "1ST", label: "CHAMPION", color: "#D4A843" },
-            { place: "2ND", label: "1ST RUNNER UP", color: "#B87333" },
-            { place: "3RD", label: "2ND RUNNER UP", color: "#8E8E93" },
+            {
+              place: "1ST",
+              label: "CHAMPION",
+              color: "#FFD700",
+              bgColor: "rgba(255, 215, 0, 0.08)",
+              borderColor: "rgba(255, 215, 0, 0.6)",
+              glow: "0 0 20px rgba(255, 215, 0, 0.3)",
+              badge: "GOLD MEDAL",
+            },
+            {
+              place: "2ND",
+              label: "1ST RUNNER UP",
+              color: "#E0E0E0",
+              bgColor: "rgba(192, 192, 192, 0.08)",
+              borderColor: "rgba(192, 192, 192, 0.6)",
+              glow: "0 0 20px rgba(192, 192, 192, 0.25)",
+              badge: "SILVER MEDAL",
+            },
+            {
+              place: "3RD",
+              label: "2ND RUNNER UP",
+              color: "#CD7F32",
+              bgColor: "rgba(205, 127, 50, 0.08)",
+              borderColor: "rgba(205, 127, 50, 0.6)",
+              glow: "0 0 20px rgba(205, 127, 50, 0.25)",
+              badge: "BRONZE MEDAL",
+            },
           ].map((p) => (
             <div
               key={p.place}
-              className="flex flex-col items-center justify-center py-4 rounded-xl border bg-[#0A0A0A]"
-              style={{ borderColor: `${p.color}50` }}
+              className="flex flex-col items-center justify-center py-5 px-4 rounded-xl border relative transition-all duration-300 hover:scale-[1.02]"
+              style={{
+                backgroundColor: p.bgColor,
+                borderColor: p.borderColor,
+                boxShadow: p.glow,
+              }}
             >
-              <span className="font-mono-code text-2xl font-bold" style={{ color: p.color }}>{p.place}</span>
-              <span className="font-mono-code text-[9px] tracking-widest mt-1" style={{ color: p.color }}>{p.label}</span>
+              <span
+                className="font-mono-code text-[9px] tracking-widest px-2 py-0.5 rounded border mb-2 font-bold"
+                style={{ color: p.color, borderColor: p.borderColor }}
+              >
+                {p.badge}
+              </span>
+              <span
+                className="font-mono-code text-3xl sm:text-4xl font-bold tracking-tight"
+                style={{
+                  color: p.color,
+                  textShadow: `0 0 15px ${p.color}66`,
+                }}
+              >
+                {p.place}
+              </span>
+              <span
+                className="font-mono-code text-[10px] tracking-widest mt-1.5 font-bold uppercase"
+                style={{ color: p.color }}
+              >
+                {p.label}
+              </span>
             </div>
           ))}
         </div>

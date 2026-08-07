@@ -43,7 +43,7 @@ export const Navbar: React.FC = () => {
             />
           </div>
           <span className="font-serif-heading text-lg font-bold text-[#D4A843] tracking-widest group-hover:text-white transition-colors">
-            <TextScramble text="ENIGMA 2026" periodicInterval={6000} />
+            <TextScramble text="ENIGMA 2026" periodicInterval={25000} />
           </span>
         </Link>
 
