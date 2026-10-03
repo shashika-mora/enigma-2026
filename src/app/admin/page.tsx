@@ -38,8 +38,8 @@ export default function AdminPage() {
   const [editStatus, setEditStatus] = useState<string>("PENDING");
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
-  // Default Passcode for Organizers (Can be updated as needed)
-  const ADMIN_PASSCODE = "ENIGMA2026";
+  // Configurable Organizer Passcode (set NEXT_PUBLIC_ADMIN_PASSCODE in .env.local)
+  const ADMIN_PASSCODE = process.env.NEXT_PUBLIC_ADMIN_PASSCODE || "ENIGMA2026";
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

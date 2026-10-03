@@ -2,8 +2,14 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /registrations/{document=**} {
-      allow read, update, delete: if true;
-      allow create: if false; // Registration closed: prevent new document creation
+      // Registration is officially closed: disallow creation of new dossiers
+      allow create: if false;
+
+      // Data safety: Permanently disallow client deletion to preserve all 73 submitted team records
+      allow delete: if false;
+
+      // Access control: Require authenticated session to read or update participant dossiers
+      allow read, update: if request.auth != null;
     }
   }
 }

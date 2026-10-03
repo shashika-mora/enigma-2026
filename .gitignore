@@ -26,6 +26,7 @@ client_secret*.json
 # Environment Variables & Secrets
 .env
 .env.*
+!.env.example
 .env.local
 .env.development.local
 .env.test.local
@@ -51,6 +52,19 @@ next-env.d.ts
 Thumbs.db
 .vscode/
 .idea/
+
+# Local Workspace & AI Instruction Adapters (NEVER COMMIT TO GIT)
+/.workspace/
+/AGENTS.md
+/GEMINI.md
+/.github/copilot-instructions.md
+
+# Data Exports, Dumps & Dossier CSVs (Protect Participant PII)
+users.json
+*.csv
+*registration*.json
+*export*.json
+/dossiers/
 
 # CRITICAL NOTE: Media assets (images, webm, png, jpg, avif, svg) in /public/ are explicitly tracked by Git as per Enigma 2026 repository guidelines. DO NOT ADD *.jpg, *.png, *.avif, or /public/ to this gitignore.
 
