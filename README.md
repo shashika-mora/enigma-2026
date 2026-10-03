@@ -85,4 +85,4 @@ enigma-2026/
 
 ## About the maintainer
 
-Developed and maintained by [Shashika Dayarathna](https://github.com/shashika-mora), Computer Science and Engineering undergraduate at the University of Moratuwa, for the University of Moratuwa Mathematics Society.
+Developed and maintained by [Shashika Dayarathna](https://dayarathna.com/), Computer Science and Engineering undergraduate at the University of Moratuwa, for the University of Moratuwa Mathematics Society.
