@@ -9,43 +9,43 @@ const events = [
     stage: "STAGE 01",
     title: "REGISTRATIONS OPEN",
     date: "5 August 2026",
-    status: "OPEN NOW",
-    desc: "Registration portal opens for all undergraduate participants. Teams of 1–3 members from any Sri Lankan university are welcome.",
+    status: "CONCLUDED",
+    desc: "Registration portal opened for all undergraduate participants across Sri Lankan universities.",
   },
   {
     stage: "STAGE 02",
     title: "REGISTRATION DEADLINE",
     date: "19 August 2026",
-    status: "UPCOMING",
-    desc: "Final deadline to complete registration. No late entries will be accepted after this date. Secure your spot early.",
+    status: "CONCLUDED",
+    desc: "Registration period has officially concluded. Registered teams have been locked in for competition rounds.",
   },
   {
     stage: "STAGE 03",
     title: "WORKSHOP I",
     date: "20 August 2026",
-    status: "UPCOMING",
-    desc: "First online workshop — foundational mathematical concepts for competitive problem solving and algorithmic thinking.",
+    status: "CONCLUDED",
+    desc: "Online workshop concluded — foundational mathematical concepts for competitive problem solving and algorithmic thinking.",
   },
   {
     stage: "STAGE 04",
     title: "WORKSHOP II",
     date: "25 August 2026",
-    status: "UPCOMING",
-    desc: "Second online workshop — advanced strategies and problem-solving techniques to sharpen your edge for the hackathon rounds.",
+    status: "CONCLUDED",
+    desc: "Second online workshop concluded — advanced strategies and problem-solving techniques for competition rounds.",
   },
   {
     stage: "STAGE 05",
     title: "ONLINE HACKATHON",
     date: "29 August 2026",
-    status: "UPCOMING",
-    desc: "6-hour qualifying round via HackerRank. Compete individually or in teams of 1–3. Top 10 teams advance to the on-campus finale.",
+    status: "CONCLUDED",
+    desc: "6-hour qualifying round via HackerRank completed. Top 10 finalist teams selected for the on-campus finale.",
   },
   {
     stage: "STAGE 06",
     title: "PHYSICAL HACKATHON FINAL",
-    date: "19 September 2026",
-    status: "UPCOMING",
-    desc: "4-hour on-campus finale at the University of Moratuwa. Top 10 qualifiers compete head-to-head for prestigious cash prizes.",
+    date: "27 September 2026",
+    status: "UPCOMING · FINAL ROUND",
+    desc: "The grand finale: 4-hour on-campus finale at the University of Moratuwa. Top 10 qualifiers compete head-to-head for prestigious cash prizes.",
   },
 ];
 
@@ -96,7 +96,7 @@ export const TimelineSection: React.FC = () => {
                     </div>
                     <p className="font-sans text-xs text-[#8E8E93] leading-relaxed">{evt.desc}</p>
                   </div>
-                  <div className={`mt-4 pt-3 border-t border-[#B87333]/30 font-mono-code text-[10px] flex items-center justify-center gap-1 ${evt.status === 'OPEN NOW' ? 'text-[#39FF14]' : 'text-[#D4A843]/70'}`}>
+                  <div className={`mt-4 pt-3 border-t border-[#B87333]/30 font-mono-code text-[10px] flex items-center justify-center gap-1 ${evt.status.includes('UPCOMING') ? 'text-[#39FF14] font-bold glow-green' : 'text-[#D4A843]/60'}`}>
                     <Clock size={12} />
                     <span>STATUS: {evt.status}</span>
                   </div>
@@ -136,7 +136,7 @@ export const TimelineSection: React.FC = () => {
                     </div>
                     <p className="font-sans text-xs text-[#8E8E93] leading-relaxed">{evt.desc}</p>
                   </div>
-                  <div className={`mt-4 pt-3 border-t border-[#B87333]/30 font-mono-code text-[10px] flex items-center justify-center gap-1 ${evt.status === 'OPEN NOW' ? 'text-[#39FF14]' : 'text-[#D4A843]/70'}`}>
+                  <div className={`mt-4 pt-3 border-t border-[#B87333]/30 font-mono-code text-[10px] flex items-center justify-center gap-1 ${evt.status.includes('UPCOMING') ? 'text-[#39FF14] font-bold glow-green' : 'text-[#D4A843]/60'}`}>
                     <Clock size={12} />
                     <span>STATUS: {evt.status}</span>
                   </div>
@@ -162,7 +162,7 @@ export const TimelineSection: React.FC = () => {
                 <span className="font-mono-code text-[11px] text-[#D4A843] bg-[#0A0A0A] px-2.5 py-1 border border-[#D4A843]/40 rounded-lg">
                   {evt.stage}
                 </span>
-                <span className="font-mono-code text-[10px] text-[#D4A843]/70">
+                <span className={`font-mono-code text-[10px] ${evt.status.includes('UPCOMING') ? 'text-[#39FF14] font-bold glow-green' : 'text-[#D4A843]/60'}`}>
                   STATUS: {evt.status}
                 </span>
               </div>

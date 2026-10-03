@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { TextScramble } from "@/components/ui/TextScramble";
 import { GlowingButton } from "@/components/ui/GlowingButton";
-import { Terminal, ArrowRight } from "lucide-react";
+import { Terminal, ArrowRight, Calendar } from "lucide-react";
 
 export const HeroSection: React.FC = () => {
 
@@ -108,10 +108,10 @@ export const HeroSection: React.FC = () => {
 
         {/* Action Buttons */}
         <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a href="#registration" className="w-full sm:w-auto">
+          <a href="#timeline" className="w-full sm:w-auto">
             <GlowingButton variant="amber" className="w-full sm:w-auto">
-              <Terminal size={16} />
-              <TextScramble text="REGISTER NOW" />
+              <Calendar size={16} />
+              <TextScramble text="VIEW TIMELINE" />
               <ArrowRight size={16} />
             </GlowingButton>
           </a>

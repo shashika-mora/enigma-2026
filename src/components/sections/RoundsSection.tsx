@@ -13,6 +13,7 @@ export const RoundsSection: React.FC = () => {
       iconColor: "#B87333",
       tag: "PREPARATION",
       badge: "ONLINE",
+      status: "CONCLUDED",
       description:
         "Two focused workshops covering mathematical concepts to sharpen programming skills, analytical thinking, and problem-solving strategies. Open to all registered participants.",
       details: [
@@ -30,13 +31,14 @@ export const RoundsSection: React.FC = () => {
       iconColor: "#D4A843",
       tag: "QUALIFYING ROUND",
       badge: "HACKERRANK",
+      status: "CONCLUDED",
       description:
-        "A 6-hour online qualifying round conducted via HackerRank. Compete individually or in teams of up to 3 members. Top 10 performers advance to the Final Hackathon.",
+        "A 6-hour online qualifying round conducted via HackerRank. Top 10 finalist teams have advanced to the on-campus Final Hackathon.",
       details: [
         "6-Hour Online Round",
         "Platform: HackerRank",
         "Individual or Teams (1–3)",
-        "Top 10 Advance",
+        "Top 10 Advance (Decided)",
       ],
       prize: null,
     },
@@ -47,8 +49,9 @@ export const RoundsSection: React.FC = () => {
       iconColor: "#D4A843",
       tag: "GRAND FINALE",
       badge: "ON-CAMPUS · UOM",
+      status: "UPCOMING",
       description:
-        "A 4-hour on-site finale at the University of Moratuwa. The top 10 teams from the qualifying round face high-stakes mathematical challenges under time pressure. Top 3 win cash prizes.",
+        "The sole remaining stage: A 4-hour on-site finale at the University of Moratuwa. The top 10 qualified teams face high-stakes mathematical challenges under time pressure. Top 3 win cash prizes.",
       details: [
         "4-Hour On-Campus Event",
         "University of Moratuwa",
@@ -84,7 +87,11 @@ export const RoundsSection: React.FC = () => {
           return (
             <div
               key={phase.id}
-              className="bg-[#1C1C1E] border border-[#B87333] p-6 sm:p-8 rounded-2xl relative flex flex-col justify-between group hover:border-[#D4A843] hover:shadow-[0_0_25px_rgba(212,168,67,0.3)] transition-all duration-300"
+              className={`bg-[#1C1C1E] p-6 sm:p-8 rounded-2xl relative flex flex-col justify-between group transition-all duration-300 ${
+                phase.status === "UPCOMING"
+                  ? "border-2 border-[#D4A843] shadow-[0_0_30px_rgba(212,168,67,0.3)] ring-1 ring-[#D4A843]/50"
+                  : "border border-[#B87333]/50 hover:border-[#D4A843] hover:shadow-[0_0_20px_rgba(212,168,67,0.2)]"
+              }`}
             >
               {/* Card Header */}
               <div>
@@ -97,9 +104,20 @@ export const RoundsSection: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Platform / Format Badge */}
-                <div className="font-mono-code text-[9px] text-[#B87333] tracking-widest uppercase border border-[#B87333]/40 px-2 py-0.5 rounded-md inline-block mb-3">
-                  {phase.badge}
+                {/* Platform / Format Badge & Status */}
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <div className="font-mono-code text-[9px] text-[#B87333] tracking-widest uppercase border border-[#B87333]/40 px-2 py-0.5 rounded-md inline-block">
+                    {phase.badge}
+                  </div>
+                  {phase.status === "CONCLUDED" ? (
+                    <span className="font-mono-code text-[9px] text-[#D4A843]/60 border border-[#D4A843]/30 px-2 py-0.5 rounded-md bg-[#0A0A0A]">
+                      CONCLUDED
+                    </span>
+                  ) : (
+                    <span className="font-mono-code text-[9px] text-[#39FF14] border border-[#39FF14]/60 px-2 py-0.5 rounded-md bg-[#0A0A0A] font-bold glow-green animate-pulse">
+                      REMAINING ROUND
+                    </span>
+                  )}
                 </div>
 
                 {/* Title */}

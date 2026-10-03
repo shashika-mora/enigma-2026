@@ -3,7 +3,6 @@ import { HeroSection } from "@/components/sections/HeroSection";
 import { AboutSection } from "@/components/sections/AboutSection";
 import { RoundsSection } from "@/components/sections/RoundsSection";
 import { TimelineSection } from "@/components/sections/TimelineSection";
-import { RegistrationSection } from "@/components/sections/RegistrationSection";
 import { RulesSection } from "@/components/sections/RulesSection";
 import { GallerySection } from "@/components/sections/GallerySection";
 import { PartnersSection } from "@/components/sections/PartnersSection";
@@ -19,7 +18,6 @@ export default function Home() {
       <RoundsSection />
       <RulesSection />
       <TimelineSection />
-      <RegistrationSection />
       <GallerySection />
       <PartnersSection />
       <ContactSection />
